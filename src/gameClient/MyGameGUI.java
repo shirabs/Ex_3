@@ -4,13 +4,9 @@ package gameClient;
 import java.io.FileNotFoundException;
 import java.io.PrintWriter;
 
-import org.json.*;
-
-import com.google.gson.Gson;
 
 import Server.Game_Server;
 import Server.game_service;
-import dataStructure.*;
 import oop_dataStructure.OOP_DGraph;
 import oop_dataStructure.oop_graph;
 
@@ -43,7 +39,6 @@ public class MyGameGUI {
 
 	private oop_graph init()  {
 		try {
-			
 			PrintWriter pw= new PrintWriter("graph to the game");
 			pw.append(game.getGraph());
 			pw.close();
