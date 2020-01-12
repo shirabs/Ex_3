@@ -25,11 +25,6 @@ import java.util.Stack;
 
 import javax.management.RuntimeErrorException;
 
-import dataStructure.DGraph;
-import dataStructure.NodeData;
-import dataStructure.edge_data;
-import dataStructure.graph;
-import dataStructure.node_data;
 import utils.StdDraw;
 
 /**
@@ -74,17 +69,6 @@ public class Graph_Algo implements graph_algorithms{
 					.of(edge_data.class, "type")
 					.registerSubtype(EdgeData.class);
 
-			final RuntimeTypeAdapterFactory<graph> graphTypefruit = RuntimeTypeAdapterFactory
-					.of(graph.class, "type") 
-					.registerSubtype(Fruits.class);
-			
-			final RuntimeTypeAdapterFactory<graph> graphTypeRobot = RuntimeTypeAdapterFactory
-					.of(graph.class, "type") 
-					.registerSubtype(Robot.class);
-			
-			
-			
-			
 
 			final GsonBuilder gson2 = new GsonBuilder();			
 			final graph result2 = gson2
