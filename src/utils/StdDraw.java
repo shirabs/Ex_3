@@ -1,3 +1,4 @@
+
 package utils;
 
 //package stdDraw;
@@ -74,8 +75,6 @@ import javax.swing.JMenu;
 import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
 import javax.swing.KeyStroke;
-
-
 
 /**
  *  The {@code StdDraw} class provides a basic capability for
@@ -715,8 +714,6 @@ public final class StdDraw implements ActionListener, MouseListener, MouseMotion
 	}
 
 	// create the menu bar (changed to private)
-	public static JMenuItem spButton;
-	public static JMenuItem isConnectedButton;
 	private static JMenuBar createMenuBar() {
 		JMenuBar menuBar = new JMenuBar();
 		JMenu menu = new JMenu("File");
@@ -726,13 +723,6 @@ public final class StdDraw implements ActionListener, MouseListener, MouseMotion
 		menuItem1.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_S,
 				Toolkit.getDefaultToolkit().getMenuShortcutKeyMask()));
 		menu.add(menuItem1);
-
-		JMenu menu2 =new JMenu("algorithms");
-		menuBar.add(menu2);
-		spButton = new JMenuItem("shortestPath");
-		menu2.add(spButton);
-		isConnectedButton = new JMenuItem("is connected");		
-		menu2.add(isConnectedButton);
 		return menuBar;
 	}
 
@@ -1000,6 +990,7 @@ public final class StdDraw implements ActionListener, MouseListener, MouseMotion
 		double r = penRadius;
 		float scaledPenRadius = (float) (r * DEFAULT_SIZE);
 
+		
 		// double ws = factorX(2*r);
 		// double hs = factorY(2*r);
 		// if (ws <= 1 && hs <= 1) pixel(x, y);
