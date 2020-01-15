@@ -2,15 +2,21 @@ package gameClient;
 
 
 import java.awt.Color;
+import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.PrintWriter;
-
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Scanner;
+
+import org.json.JSONArray;
+import org.json.JSONObject;
 
 import Server.Game_Server;
+import myUser.fruit;
 import Server.*;
 import oop_dataStructure.*;
 import oop_utils.OOP_Point3D;
@@ -33,53 +39,61 @@ public class MyGameGUI {
 	}
 
 	public void guiGame() {
+		System.out.println(game.toString());
 		drowGraph();
-		drowFruit();
+		List<String> f= game.getFruits();
+		ArrayList<fruit> fr= new ArrayList<fruit>();
+		Iterator<String> it=f.iterator();
+		while(it.hasNext()) {
+			String s=it.next();
+			String[] st=s.split((char)34+"");
+			double v=Double.parseDouble(st[4].substring(1, st[4].length()-1));
+			int t=Integer.parseInt(st[6].substring(1, st[6].length()-1));
+			st=st[9].split(",");
+			OOP_Point3D p=new OOP_Point3D(Double.parseDouble(st[0]),Double.parseDouble(st[1]),0);
+			fruit a=new fruit(v, p, t);
+			fr.add(a);
+		}
+		drowFruit(fr);
+		JSONObject line;
+        try {
+            line = new JSONObject(game.toString());
+            JSONObject ttt = line.getJSONObject("GameServer");
+            int rs = ttt.getInt("robots");
+			for(int a = 0;a<rs;a++) {
+				game.addRobot(a);
+			}
+		}
+        catch (Exception e) {
+        	e.printStackTrace();
+        	}
+    	game.startGame();
+		// should be a Thread!!!
+		while(game.isRunning()) {
+//			moveRobots(game, g);
+		}
+
+
+
 	}
 
-	private void drowFruit() {
-		List<String> f= game.getFruits();
-		System.out.println(f);
+	private void drowFruit(ArrayList<fruit> fr) {
 
-		LinkedList<fruits> fruits= new LinkedList<fruits>();
-		Iterator<String> it=f.iterator();
-		while (it.hasNext()) {
-			String temp=it.next();
-			String s= temp.substring(temp.indexOf("\"pos\":"));
-			double x= Double.parseDouble(s.substring(7, s.indexOf(",")));
-			double y= Double.parseDouble(s.substring(s.indexOf(",")+1, s.lastIndexOf(',')));
-			if(temp.contains("\"type\":1")) {
+		Iterator<fruit> it2=fr.iterator();
+		while (it2.hasNext()) {
+			fruit temp=it2.next();
+			double x= temp.getPos().x();
+			double y= temp.getPos().y();
+			if(temp.getType()==1)
 				StdDraw.picture(x, y, "banna.png",0.0008,0.0005);
-			}
 			else
 				StdDraw.picture(x, y, "tree.png",0.0008,0.0005);
 		}
-System.out.println(game.toString());
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 	}
+
+
+
+
 	private void drowGraph() {
 		//set x-axis and y-axis	
 		StdDraw.setCanvasSize(1300,600);
@@ -142,9 +156,7 @@ System.out.println(game.toString());
 		StdDraw.setYscale(ymin-0.001,ymax+0.001);
 	}
 
-
-
-
+	
 
 
 

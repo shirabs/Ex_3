@@ -3,7 +3,7 @@ package gameClient;
 public class TestForMe {
 	public static void main(String[] args) {
 
-		MyGameGUI mgg= new MyGameGUI(23);
+		MyGameGUI mgg= new MyGameGUI(5);
 		mgg.guiGame();
 	}
 }
