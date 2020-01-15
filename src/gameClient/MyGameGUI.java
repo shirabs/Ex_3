@@ -54,7 +54,7 @@ public class MyGameGUI {
 			else
 				StdDraw.picture(x, y, "tree.png",0.0008,0.0005);
 		}
-
+System.out.println(game.toString());
 
 
 
@@ -82,7 +82,7 @@ public class MyGameGUI {
 	}
 	private void drowGraph() {
 		//set x-axis and y-axis	
-		StdDraw.setCanvasSize();
+		StdDraw.setCanvasSize(1300,600);
 		setCanvas(g);
 		//drow point node
 		Collection<oop_node_data> v =g.getV();
