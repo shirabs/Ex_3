@@ -2,102 +2,95 @@ package gameClient;
 
 
 import java.awt.Color;
-import java.io.File;
+import java.awt.event.ActionListener;
+import java.awt.event.MouseEvent;
 import java.io.FileNotFoundException;
 import java.io.PrintWriter;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Iterator;
-import java.util.LinkedList;
 import java.util.List;
-import java.util.Scanner;
 
-import org.json.JSONArray;
+import javax.swing.JOptionPane;
+
+import org.json.JSONException;
 import org.json.JSONObject;
 
-import Server.Game_Server;
-import myUser.fruit;
+
+
 import Server.*;
 import oop_dataStructure.*;
+import oop_elements.OOP_Edge;
 import oop_utils.OOP_Point3D;
 import utils.StdDraw;
+
 
 
 public class MyGameGUI {
 
 	private game_service game;
-	oop_graph g;
+	private oop_graph g;
+	private List<Fruit> f=new ArrayList<Fruit>();
+	//	private List<RobotG> r= new ArrayList<RobotG>();
 
 	public MyGameGUI() {
-		game= Game_Server.getServer(0);
-		g =init();
-	}
-
-	public MyGameGUI(int level) {
-		game= Game_Server.getServer(level);
-		g =init();
-	}
-
-	public void guiGame() {
-		System.out.println(game.toString());
-		drowGraph();
-		List<String> f= game.getFruits();
-		ArrayList<fruit> fr= new ArrayList<fruit>();
-		Iterator<String> it=f.iterator();
-		while(it.hasNext()) {
-			String s=it.next();
-			String[] st=s.split((char)34+"");
-			double v=Double.parseDouble(st[4].substring(1, st[4].length()-1));
-			int t=Integer.parseInt(st[6].substring(1, st[6].length()-1));
-			st=st[9].split(",");
-			OOP_Point3D p=new OOP_Point3D(Double.parseDouble(st[0]),Double.parseDouble(st[1]),0);
-			fruit a=new fruit(v, p, t);
-			fr.add(a);
-		}
-		drowFruit(fr);
-		JSONObject line;
-        try {
-            line = new JSONObject(game.toString());
-            JSONObject ttt = line.getJSONObject("GameServer");
-            int rs = ttt.getInt("robots");
-			for(int a = 0;a<rs;a++) {
-				game.addRobot(a);
-			}
-		}
-        catch (Exception e) {
-        	e.printStackTrace();
-        	}
-    	game.startGame();
-		// should be a Thread!!!
-		while(game.isRunning()) {
-//			moveRobots(game, g);
-		}
-
-
 
 	}
-
-	private void drowFruit(ArrayList<fruit> fr) {
-
-		Iterator<fruit> it2=fr.iterator();
-		while (it2.hasNext()) {
-			fruit temp=it2.next();
-			double x= temp.getPos().x();
-			double y= temp.getPos().y();
-			if(temp.getType()==1)
-				StdDraw.picture(x, y, "banna.png",0.0008,0.0005);
-			else
-				StdDraw.picture(x, y, "tree.png",0.0008,0.0005);
-		}
-	}
-
-
-
-
-	private void drowGraph() {
+	private void initGame() {
 		//set x-axis and y-axis	
 		StdDraw.setCanvasSize(1300,600);
 		setCanvas(g);
+	}
+
+
+	//drow the level game
+	private void guiGame() {
+		drowGraph();
+		drowFruit();
+		drowRobot();
+	}
+
+	//drow the fruit on the graph
+	private void drowFruit() {
+		initfruit();
+		Iterator<Fruit> it2=f.iterator();
+		while (it2.hasNext()) {
+			Fruit temp=it2.next();
+			double x= temp.getLocation().x();
+			double y= temp.getLocation().y();
+			if(temp.getType()==1)
+				StdDraw.picture(x, y, "banna.png",0.0005,0.0004);
+			else
+				StdDraw.picture(x, y, "tree.png",0.0005,0.0004);
+		}
+	}
+
+	//drow the robot on the graph
+	private void drowRobot() {
+		List<String> robot=game.getRobots();
+		System.out.println(robot);
+		Iterator<String> it=robot.iterator();
+		try {
+			while(it.hasNext()) {
+				JSONObject obj = new JSONObject(it.next());
+				JSONObject fr = (JSONObject) obj.get("Robot");
+				String pos = fr.getString("pos");
+				String[] point = pos.split(",");
+				double x = Double.parseDouble(point[0]);
+				double y = Double.parseDouble(point[1]);
+				double z = Double.parseDouble(point[2]);
+				StdDraw.picture(x, y, "robot.png",0.0005,0.0005);
+			}
+		}
+		catch (Exception e) {
+		}
+	}
+
+
+
+
+	//drow the graph
+	private void drowGraph() {
 		//drow point node
 		Collection<oop_node_data> v =g.getV();
 		Iterator<oop_node_data> it=v.iterator();
@@ -156,11 +149,7 @@ public class MyGameGUI {
 		StdDraw.setYscale(ymin-0.001,ymax+0.001);
 	}
 
-	
-
-
-
-
+	//init the graph of the choose level
 	private oop_graph init()  {
 		try {
 			PrintWriter pw= new PrintWriter("graph to the game");
@@ -174,5 +163,143 @@ public class MyGameGUI {
 			e.printStackTrace();
 		}
 		return null ;
+	}
+
+	//update the fruit from data game
+	private void initfruit() {
+		List<String> fruit=game.getFruits();
+		Iterator<String> it=fruit.iterator();
+		try {
+			while(it.hasNext()) {
+				JSONObject obj = new JSONObject(it.next());
+				JSONObject fr = (JSONObject) obj.get("Fruit");
+				double value = fr.getDouble("value");
+				int type = fr.getInt("type");
+				String pos = fr.getString("pos");
+				String[] point = pos.split(",");
+				double x = Double.parseDouble(point[0]);
+				double y = Double.parseDouble(point[1]);
+				double z = Double.parseDouble(point[2]);
+				OOP_Point3D pos1 = new OOP_Point3D(x, y, z);
+				oop_edge_data edge=findFruitEdge(pos1);
+				if(type==-1) {
+					Fruit t= new Fruit(value,pos1,new OOP_Edge(edge.getDest(), edge.getSrc()));
+					f.add(t);
+				}
+				else {
+					Fruit t= new Fruit(value,pos1,edge);
+					f.add(t);
+				}
+			}
+		}
+		catch (Exception e) {
+			System.out.println("hhhh");
+		}
+	}
+	private oop_edge_data findFruitEdge(OOP_Point3D pos) {
+		Collection<oop_node_data> v = g.getV();
+		for(oop_node_data n : v) {
+			Collection<oop_edge_data> e = g.getE(n.getKey());
+			for(oop_edge_data ed: e) {
+				OOP_Point3D p =g.getNode(ed.getSrc()).getLocation();
+				OOP_Point3D p2 =g.getNode(ed.getDest()).getLocation();
+				//check if the fruit is on the edge
+				if(Math.abs((p.distance2D(p2)-(Math.abs((pos.distance2D(p)))+(Math.abs((pos.distance2D(p2))))))) <= 0.0000001)
+				{
+					int low=n.getKey();
+					int high=ed.getDest();
+					if(n.getKey()>ed.getDest()) {
+						low= ed.getDest();
+						high= n.getKey();
+					}
+					oop_edge_data edF = g.getEdge(low, high);
+					if(edF!= null) return edF;
+				}
+			}
+		}
+		return null;
+	}
+
+
+
+	public void playManualGame() {
+		try{
+			String num = JOptionPane.showInputDialog(null, "Enter a scenario you want to play : ");
+			int scenario_num = Integer.parseInt(num);
+			if(scenario_num>=0 && scenario_num<=23) {
+				game = Game_Server.getServer(scenario_num);
+				g=init();
+			}
+			System.out.println(g);
+			guiGame();
+			String gameString = game.toString();
+			JSONObject obj;
+			obj = new JSONObject(gameString);
+			JSONObject rr = (JSONObject) obj.get("GameServer");
+			int numRobot = rr.getInt("robots");
+
+
+
+
+
+		}
+		catch (JSONException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+
+	}
+
+
+	public void PlayAotuGame() {
+		String num = JOptionPane.showInputDialog(null, "Enter a scenario you want to play : ");
+		int scenario_num = Integer.parseInt(num);
+		if(scenario_num>=0 && scenario_num<=23) {
+			game = Game_Server.getServer(scenario_num);
+			g=init();
+			initGame();
+			guiGame();
+
+		}
+		try {
+			JSONObject line = new JSONObject(game.toString());
+			JSONObject ttt = line.getJSONObject("GameServer");
+			int rs = ttt.getInt("robots");
+			int visit=0;
+			for(int a = 0;a<rs;a++) {
+				putRobot(visit);
+				visit++;
+			}
+		}
+		catch (Exception e) {
+			// TODO: handle exception
+		}
+		guiGame();
+		StdDraw.pause(50);
+
+		game.startGame();
+		while(game.isRunning()) {
+			moveRobots();
+		}
+
+
+	}
+
+	private void moveRobots() {
+
+		
+		
+		
+		
+		
+		
+		
+		
+	}
+	private void putRobot(int v) {
+		if(v<f.size()) {
+			game.addRobot(findFruitEdge(f.get(v).getLocation()).getSrc());
+
+		}
 	}
 }
