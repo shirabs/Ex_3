@@ -196,6 +196,7 @@ public class MyGameGUI {
 			System.out.println("hhhh");
 		}
 	}
+
 	private oop_edge_data findFruitEdge(OOP_Point3D pos) {
 		Collection<oop_node_data> v = g.getV();
 		for(oop_node_data n : v) {
@@ -263,43 +264,73 @@ public class MyGameGUI {
 		}
 		try {
 			JSONObject line = new JSONObject(game.toString());
-			JSONObject ttt = line.getJSONObject("GameServer");
-			int rs = ttt.getInt("robots");
+			JSONObject gs = line.getJSONObject("GameServer");
+			int rs = gs.getInt("robots");
 			int visit=0;
 			for(int a = 0;a<rs;a++) {
 				putRobot(visit);
 				visit++;
 			}
+			guiGame();
+			game.startGame();
+			//			System.out.println(game.move());
+			//			System.out.println(game.getRobots());
+
+			while(game.isRunning()) {
+				StdDraw.clear();
+				List<String> robots = game.move();
+				for(String robot : robots) {
+					long t = game.timeToEnd();
+					String robot_json = robot;
+					line = new JSONObject(robot_json);
+					JSONObject ttt = line.getJSONObject("Robot");
+					int rid = ttt.getInt("id");
+					int src = ttt.getInt("src");
+					int dest = ttt.getInt("dest");
+
+					if(dest==-1) {	
+						dest = nextNode(src);
+						game.chooseNextEdge(rid, dest);
+
+						System.out.println("Turn to node: "+dest+"  time to end:"+(t/1000));
+						System.out.println(ttt);
+					}
+				}
+				//										game.move();
+				guiGame();
+				Thread.sleep(150);
+
+			}
 		}
+
 		catch (Exception e) {
 			// TODO: handle exception
 		}
-		guiGame();
-		StdDraw.pause(50);
 
-		game.startGame();
-		while(game.isRunning()) {
-			moveRobots();
+	}
+
+	private  int nextNode( int src) {
+		int ans = -1;
+		Collection<oop_edge_data> ee = g.getE(src);
+		Iterator<oop_edge_data> itr = ee.iterator();
+		Iterator<Fruit> it = f.iterator();
+		while(itr.hasNext()){
+			OOP_Point3D t=g.getNode(itr.next().getSrc()).getLocation();
+			while(it.hasNext()) {
+				if(t.distance2D(it.next().getLocation())<0.0003)
+					return src;
+			}
 		}
-
+		ans = itr.next().getDest();
+		return ans;
 
 	}
 
-	private void moveRobots() {
 
-		
-		
-		
-		
-		
-		
-		
-		
-	}
+
 	private void putRobot(int v) {
 		if(v<f.size()) {
 			game.addRobot(findFruitEdge(f.get(v).getLocation()).getSrc());
-
 		}
 	}
 }
