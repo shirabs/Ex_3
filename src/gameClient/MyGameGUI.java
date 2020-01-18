@@ -14,6 +14,7 @@ import javax.swing.JOptionPane;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import com.sun.org.apache.bcel.internal.classfile.Node;
 
 import Server.*;
 import oop_dataStructure.*;
@@ -67,7 +68,7 @@ public class MyGameGUI {
 	//draw the robot on the graph
 	private void drowRobot() {
 		List<String> robot=game.getRobots();
-		//		System.out.println(robot);
+				System.out.println(robot);
 
 		try {
 			for(String r:robot) {
@@ -84,15 +85,15 @@ public class MyGameGUI {
 			e.printStackTrace();
 		}
 	}
-	
+
 	//draw the robot in graph menul
 	private void drawRobotMenul(OOP_NodeData a) {
-		
+
 		try {
-				double x=a.getLocation().x();
-				double y=a.getLocation().y();
-				StdDraw.picture(x, y, "robot.png",0.0005,0.0005);
-			
+			double x=a.getLocation().x();
+			double y=a.getLocation().y();
+			StdDraw.picture(x, y, "robot.png",0.0005,0.0005);
+
 		}
 		catch (Exception e) {
 		}
@@ -247,12 +248,37 @@ public class MyGameGUI {
 				int rs = gs.getInt("robots");
 				for(int a = 0;a<rs;a++) {
 					String rob = JOptionPane.showInputDialog(null, "choose were you want to put the robot  : ");
-					putRobotMenul(Integer.parseInt(rob));
-					System.out.println(rob);
-					oop_node_data ezer=g.getNode(Integer.parseInt(rob));
-					drawRobotMenul((OOP_NodeData) ezer);
+					game.addRobot(Integer.parseInt(rob));
 				}
+				guiGame();
+				game.startGame();
+				while(game.isRunning()) {
+					StdDraw.clear();
+					StdDraw.setPenColor(Color.BLACK);
+					StdDraw.text(35.187530535916  , 32.10785303529412 , "time to end 00:"+game.timeToEnd()/1000  );
+					List<String> robots = game.move();
+					for(String robot : robots) {
+						String robot_json = robot;
+						line = new JSONObject(robot_json);
+						JSONObject r = line.getJSONObject("Robot");
+						int id = r.getInt("id");
+						int src = r.getInt("src");
+						int dest = r.getInt("dest");
 
+						if(dest==-1) {	
+							String nextnode = JOptionPane.showInputDialog(null, "choose were you want to go with the robot  : ");
+							graph_algorithms ag= new Graph_Algo();
+							List<oop_node_data> ro= ag.shortestPath(src, Integer.parseInt(nextnode));
+							for(oop_node_data n:ro) {
+								game.chooseNextEdge(id, n.getKey());
+								game.move();
+							}
+						}
+					}
+					guiGame();
+					Thread.sleep(300);
+				}
+				gameOver();
 			}
 			catch (JSONException e) {
 				e.printStackTrace();
@@ -269,8 +295,6 @@ public class MyGameGUI {
 			game = Game_Server.getServer(scenario_num);
 			g=init();
 			initGame();
-			guiGame();
-
 		}
 		try {
 			JSONObject line = new JSONObject(game.toString());
@@ -359,12 +383,4 @@ public class MyGameGUI {
 		}
 	}
 
-	private void putRobotMenul(int a) {
-		game.addRobot(pointch(a));
-	}
-
-	private int pointch(int a) {	
-		oop_node_data loc=g.getNode(a);
-		return loc.getKey();
-	}
 }
