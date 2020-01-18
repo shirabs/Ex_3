@@ -2,8 +2,7 @@ package gameClient;
 
 
 import java.awt.Color;
-import java.awt.event.ActionListener;
-import java.awt.event.MouseEvent;
+import java.awt.Font;
 import java.io.FileNotFoundException;
 import java.io.PrintWriter;
 import java.util.ArrayList;
@@ -22,7 +21,9 @@ import Server.*;
 import oop_dataStructure.*;
 import oop_elements.OOP_Edge;
 import oop_utils.OOP_Point3D;
+import utils.Graph_Algo;
 import utils.StdDraw;
+import utils.graph_algorithms;
 
 
 
@@ -31,17 +32,15 @@ public class MyGameGUI {
 	private game_service game;
 	private oop_graph g;
 	private List<Fruit> f=new ArrayList<Fruit>();
-	//	private List<RobotG> r= new ArrayList<RobotG>();
 
 	public MyGameGUI() {
-
 	}
+
 	private void initGame() {
 		//set x-axis and y-axis	
 		StdDraw.setCanvasSize(1300,600);
 		setCanvas(g);
 	}
-
 
 	//drow the level game
 	private void guiGame() {
@@ -68,26 +67,23 @@ public class MyGameGUI {
 	//drow the robot on the graph
 	private void drowRobot() {
 		List<String> robot=game.getRobots();
-		System.out.println(robot);
-		Iterator<String> it=robot.iterator();
+		//		System.out.println(robot);
+
 		try {
-			while(it.hasNext()) {
-				JSONObject obj = new JSONObject(it.next());
+			for(String r:robot) {
+				JSONObject obj = new JSONObject(r);
 				JSONObject fr = (JSONObject) obj.get("Robot");
 				String pos = fr.getString("pos");
 				String[] point = pos.split(",");
 				double x = Double.parseDouble(point[0]);
 				double y = Double.parseDouble(point[1]);
-				double z = Double.parseDouble(point[2]);
 				StdDraw.picture(x, y, "robot.png",0.0005,0.0005);
 			}
 		}
 		catch (Exception e) {
+			e.printStackTrace();
 		}
 	}
-
-
-
 
 	//drow the graph
 	private void drowGraph() {
@@ -167,6 +163,7 @@ public class MyGameGUI {
 
 	//update the fruit from data game
 	private void initfruit() {
+		f=new ArrayList<Fruit>();
 		List<String> fruit=game.getFruits();
 		Iterator<String> it=fruit.iterator();
 		try {
@@ -181,7 +178,7 @@ public class MyGameGUI {
 				double y = Double.parseDouble(point[1]);
 				double z = Double.parseDouble(point[2]);
 				OOP_Point3D pos1 = new OOP_Point3D(x, y, z);
-				oop_edge_data edge=findFruitEdge(pos1);
+				oop_edge_data edge=foundFruitEdge(pos1);
 				if(type==-1) {
 					Fruit t= new Fruit(value,pos1,new OOP_Edge(edge.getDest(), edge.getSrc()));
 					f.add(t);
@@ -193,11 +190,12 @@ public class MyGameGUI {
 			}
 		}
 		catch (Exception e) {
-			System.out.println("hhhh");
+			e.printStackTrace();
 		}
 	}
 
-	private oop_edge_data findFruitEdge(OOP_Point3D pos) {
+	// found the edge that the fruit found their	
+	private oop_edge_data foundFruitEdge(OOP_Point3D pos) {
 		Collection<oop_node_data> v = g.getV();
 		for(oop_node_data n : v) {
 			Collection<oop_edge_data> e = g.getE(n.getKey());
@@ -221,8 +219,7 @@ public class MyGameGUI {
 		return null;
 	}
 
-
-
+	//play manual game
 	public void playManualGame() {
 		try{
 			String num = JOptionPane.showInputDialog(null, "Enter a scenario you want to play : ");
@@ -251,7 +248,7 @@ public class MyGameGUI {
 
 	}
 
-
+	//	play automatic game
 	public void PlayAotuGame() {
 		String num = JOptionPane.showInputDialog(null, "Enter a scenario you want to play : ");
 		int scenario_num = Integer.parseInt(num);
@@ -273,64 +270,81 @@ public class MyGameGUI {
 			}
 			guiGame();
 			game.startGame();
-			//			System.out.println(game.move());
-			//			System.out.println(game.getRobots());
-
 			while(game.isRunning()) {
 				StdDraw.clear();
+				StdDraw.setPenColor(Color.BLACK);
+				StdDraw.text(35.187530535916  , 32.10785303529412 , "time to end 00:"+game.timeToEnd()/1000  );
 				List<String> robots = game.move();
 				for(String robot : robots) {
-					long t = game.timeToEnd();
 					String robot_json = robot;
 					line = new JSONObject(robot_json);
-					JSONObject ttt = line.getJSONObject("Robot");
-					int rid = ttt.getInt("id");
-					int src = ttt.getInt("src");
-					int dest = ttt.getInt("dest");
+					JSONObject r = line.getJSONObject("Robot");
+					int id = r.getInt("id");
+					int src = r.getInt("src");
+					int dest = r.getInt("dest");
 
 					if(dest==-1) {	
 						dest = nextNode(src);
-						game.chooseNextEdge(rid, dest);
-
-						System.out.println("Turn to node: "+dest+"  time to end:"+(t/1000));
-						System.out.println(ttt);
+						game.chooseNextEdge(id, dest);
 					}
 				}
-				//										game.move();
 				guiGame();
-				Thread.sleep(150);
-
+				Thread.sleep(300);
 			}
+			gameOver();
 		}
 
 		catch (Exception e) {
-			// TODO: handle exception
+			e.printStackTrace();
+			System.out.println(e.getMessage());
+
 		}
 
 	}
 
+	// print to the window the result of the game	
+	private void gameOver() {
+		try {
+			double result=0;
+			for(String r:game.getRobots()) {
+				JSONObject line = new JSONObject(r);
+				JSONObject s = line.getJSONObject("Robot");
+				result+= s.getDouble("value");
+			}
+			StdDraw.setPenColor(Color.BLACK);
+			StdDraw.picture(35.197730011299,32.104700000825,"game over.png");
+			StdDraw.text(35.197730011299, 32.10469393931, "results: "+ result);
+
+
+		}
+		catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
+
+	//return the hext node to move from the short path to the fruit	
 	private  int nextNode( int src) {
-		int ans = -1;
-		Collection<oop_edge_data> ee = g.getE(src);
-		Iterator<oop_edge_data> itr = ee.iterator();
-		Iterator<Fruit> it = f.iterator();
-		while(itr.hasNext()){
-			OOP_Point3D t=g.getNode(itr.next().getSrc()).getLocation();
-			while(it.hasNext()) {
-				if(t.distance2D(it.next().getLocation())<0.0003)
-					return src;
+		graph_algorithms ag=new Graph_Algo();
+		ag.init(g);
+		int a= foundFruitEdge(f.get(0).getLocation()).getDest();
+		List<oop_node_data> sp=ag.shortestPath(src,a);
+		for( fruits fruit:f ) {
+			a= foundFruitEdge(fruit.getLocation()).getDest();
+			if(a==src) {
+				a= foundFruitEdge(fruit.getLocation()).getSrc();
+			}
+			List<oop_node_data> spt=ag.shortestPath(src, a);
+			if(spt.size()<=sp.size()||sp.size()==1){
+				sp=spt;
 			}
 		}
-		ans = itr.next().getDest();
-		return ans;
-
+		return sp.get(1).getKey();
 	}
 
-
-
+	//	add robot to the game
 	private void putRobot(int v) {
 		if(v<f.size()) {
-			game.addRobot(findFruitEdge(f.get(v).getLocation()).getSrc());
+			game.addRobot(foundFruitEdge(f.get(v).getLocation()).getSrc());
 		}
 	}
 }
