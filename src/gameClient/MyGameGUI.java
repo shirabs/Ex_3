@@ -17,13 +17,13 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 
-
 import Server.*;
 import oop_dataStructure.*;
 import oop_elements.OOP_Edge;
+import oop_elements.OOP_NodeData;
 import oop_utils.OOP_Point3D;
 import utils.StdDraw;
-
+import java.util.Scanner;
 
 
 public class MyGameGUI {
@@ -65,7 +65,7 @@ public class MyGameGUI {
 		}
 	}
 
-	//drow the robot on the graph
+	//draw the robot on the graph
 	private void drowRobot() {
 		List<String> robot=game.getRobots();
 		System.out.println(robot);
@@ -81,6 +81,18 @@ public class MyGameGUI {
 				double z = Double.parseDouble(point[2]);
 				StdDraw.picture(x, y, "robot.png",0.0005,0.0005);
 			}
+		}
+		catch (Exception e) {
+		}
+	}
+	//draw the robot in graph menul
+	private void drawRobotMenul(OOP_NodeData a) {
+		
+		try {
+				double x=a.getLocation().x();
+				double y=a.getLocation().y();
+				StdDraw.picture(x, y, "robot.png",0.0005,0.0005);
+			
 		}
 		catch (Exception e) {
 		}
@@ -222,31 +234,35 @@ public class MyGameGUI {
 	}
 
 
+	//------------------------------------------------------------------------>>>>	
 
 	public void playManualGame() {
-		try{
-			String num = JOptionPane.showInputDialog(null, "Enter a scenario you want to play : ");
-			int scenario_num = Integer.parseInt(num);
-			if(scenario_num>=0 && scenario_num<=23) {
-				game = Game_Server.getServer(scenario_num);
-				g=init();
-			}
-			System.out.println(g);
+
+		String num = JOptionPane.showInputDialog(null, "Enter a scenario you want to play : ");
+		int scenario_num = Integer.parseInt(num);
+		if(scenario_num>=0 && scenario_num<=23) {
+			game = Game_Server.getServer(scenario_num);
+			g=init();
+			initGame();
+			//System.out.println(g);
 			guiGame();
-			String gameString = game.toString();
-			JSONObject obj;
-			obj = new JSONObject(gameString);
-			JSONObject rr = (JSONObject) obj.get("GameServer");
-			int numRobot = rr.getInt("robots");
+			try {
+				JSONObject line = new JSONObject(game.toString());
+				JSONObject gs = line.getJSONObject("GameServer");
+				int rs = gs.getInt("robots");
+				for(int a = 0;a<rs;a++) {
+					String rob = JOptionPane.showInputDialog(null, "chose were you want to put the robot  : ");
+					putRobotMenul(Integer.parseInt(rob));
+					System.out.println(rob);
+					oop_node_data ezer=g.getNode(Integer.parseInt(rob));
+					drawRobotMenul((OOP_NodeData) ezer);
+				}
 
-
-
-
-
-		}
-		catch (JSONException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			}
+			catch (JSONException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
 		}
 
 	}
@@ -309,6 +325,7 @@ public class MyGameGUI {
 
 	}
 
+
 	private  int nextNode( int src) {
 		int ans = -1;
 		Collection<oop_edge_data> ee = g.getE(src);
@@ -332,5 +349,16 @@ public class MyGameGUI {
 		if(v<f.size()) {
 			game.addRobot(findFruitEdge(f.get(v).getLocation()).getSrc());
 		}
+	}
+
+	private void putRobotMenul(int a) {
+		game.addRobot(pointch(a));
+
+	}
+
+	private int pointch(int a) {
+		
+		oop_node_data loc=g.getNode(a);
+		return loc.getKey();
 	}
 }
