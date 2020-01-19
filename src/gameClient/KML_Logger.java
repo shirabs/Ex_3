@@ -94,11 +94,11 @@ class KML_Logger {
 				);
 	}
 
-	
-//	  this function is used in "paint"
-//	  after painting each element
-//	  the function enters the kml the location of each element
-	
+
+	//	  this function is used in "paint"
+	//	  after painting each element
+	//	  the function enters the kml the location of each element
+
 	void Place_Mark(String id, String location){
 		LocalDateTime Present_time = LocalDateTime.now();
 		str.append(
@@ -131,13 +131,7 @@ class KML_Logger {
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
-	}
-	public static void main(String[] args) {
-		for(int i=0;i<24;i++) {
-			KML_Logger d= new KML_Logger(i);
-			d.KML_Stop();
 
-		}
 	}
 
 }
