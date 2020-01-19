@@ -2,6 +2,8 @@ package gameClient;
 
 
 import java.awt.Color;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.io.FileNotFoundException;
 import java.io.PrintWriter;
 import java.util.ArrayList;
@@ -9,7 +11,10 @@ import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
 
+import javax.swing.JButton;
+import javax.swing.JFrame;
 import javax.swing.JOptionPane;
+import javax.swing.event.AncestorListener;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -37,6 +42,15 @@ public class MyGameGUI {
 	double ymax=Double.MIN_VALUE;
 
 	public MyGameGUI() {
+		String game = (JOptionPane.showInputDialog(null, "choose game ","game",
+				JOptionPane.PLAIN_MESSAGE,null,new Object[] {"playManualGame","PlayAotuGame"},"select")).toString();
+		if(game=="playManualGame") {
+			playManualGame();
+		}
+		else {
+			PlayAotuGame();
+		}
+		
 	}
 
 	private void initGame() {
@@ -44,16 +58,15 @@ public class MyGameGUI {
 		StdDraw.setCanvasSize(1300,600);
 		setCanvas(g);
 
-
 	}
 
 	private void guiGame() {
-		drowFruit();
-		drowRobot();
+		drawFruit();
+		drawRobot();
 	}
 
-	//drow the fruit on the graph
-	private void drowFruit() {
+	//draw the fruit on the graph
+	private void drawFruit() {
 		initfruit();
 		Iterator<Fruit> it2=f.iterator();
 		while (it2.hasNext()) {
@@ -68,7 +81,7 @@ public class MyGameGUI {
 	}
 
 	//draw the robot on the graph
-	private void drowRobot() {
+	private void drawRobot() {
 		List<String> robot=game.getRobots();
 		System.out.println(robot);
 
@@ -89,9 +102,11 @@ public class MyGameGUI {
 	}
 
 
-	//drow the graph
-	private void drowGraph() {
-		//drow point node
+	//draw the graph
+	private void drawGraph() {
+		StdDraw.picture((xmax+xmin)/2, (ymax+ymin)/2,"tapet.jpg",0.022,0.0079);
+
+		//draw point node
 		Collection<oop_node_data> v =g.getV();
 		Iterator<oop_node_data> it=v.iterator();
 		StdDraw.setPenRadius(0.015);
@@ -103,7 +118,7 @@ public class MyGameGUI {
 			StdDraw.point(x,y);
 			StdDraw.text(x+0.0001, y+0.0001, node.getKey()+"");
 		}
-		//drow line of edge , weight of edge and the direction of the edge 
+		//draw line of edge , weight of edge and the direction of the edge 
 		it=v.iterator();
 		while (it.hasNext()) {
 			Collection<oop_edge_data> e =g.getE(it.next().getKey());
@@ -126,11 +141,12 @@ public class MyGameGUI {
 				}
 			}
 		}
+
 	}
 
 	//update the range
 	private  void setCanvas(oop_graph g) {	
-		
+
 
 		Collection<oop_node_data> v =g.getV();
 		Iterator<oop_node_data> it=v.iterator();
@@ -228,7 +244,7 @@ public class MyGameGUI {
 			game = Game_Server.getServer(scenario_num);
 			g=init();
 			initGame();
-			drowGraph();
+			drawGraph();
 			guiGame();
 			try {
 				JSONObject line = new JSONObject(game.toString());
@@ -243,7 +259,7 @@ public class MyGameGUI {
 				while(game.isRunning()) {
 					StdDraw.clear();
 					StdDraw.enableDoubleBuffering();
-					drowGraph();
+					drawGraph();
 					StdDraw.setPenColor(Color.BLACK);
 					StdDraw.text(xmin+0.0003 , ymin+0.0005 , "time to end 00:"+game.timeToEnd()/1000  );
 					StdDraw.text(xmin+0.00001, ymin , "result:"+sumResult());
@@ -266,7 +282,7 @@ public class MyGameGUI {
 							for(oop_node_data n:ro) {
 								game.chooseNextEdge(id, n.getKey());
 								game.move();
-								
+
 							}
 						}
 					}
@@ -295,7 +311,7 @@ public class MyGameGUI {
 			game = Game_Server.getServer(scenario_num);
 			g=init();
 			initGame();
-			drowGraph();
+			drawGraph();
 			guiGame();
 		}
 		try {
@@ -313,7 +329,7 @@ public class MyGameGUI {
 
 				StdDraw.clear();
 				StdDraw.enableDoubleBuffering();
-				drowGraph();
+				drawGraph();
 				StdDraw.setPenColor(Color.BLACK);
 				StdDraw.text(xmin+0.0003 , ymin+0.0005 , "time to end 00:"+game.timeToEnd()/1000  );
 				StdDraw.text(xmin+0.00001, ymin , "result:"+sumResult());
