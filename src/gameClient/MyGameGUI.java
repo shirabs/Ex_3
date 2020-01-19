@@ -18,7 +18,6 @@ import org.json.JSONObject;
 import Server.*;
 import oop_dataStructure.*;
 import oop_elements.OOP_Edge;
-import oop_elements.OOP_NodeData;
 import oop_utils.OOP_Point3D;
 import utils.Graph_Algo;
 import utils.StdDraw;
@@ -32,6 +31,10 @@ public class MyGameGUI {
 	private game_service game;
 	private oop_graph g;
 	private List<Fruit> f=new ArrayList<Fruit>();
+	double xmin=Double.MAX_VALUE;
+	double xmax=Double.MIN_VALUE;
+	double ymin=Double.MAX_VALUE;
+	double ymax=Double.MIN_VALUE;
 
 	public MyGameGUI() {
 	}
@@ -40,13 +43,11 @@ public class MyGameGUI {
 		//set x-axis and y-axis	
 		StdDraw.setCanvasSize(1300,600);
 		setCanvas(g);
-		
-		
+
+
 	}
 
-	//drow the level game
 	private void guiGame() {
-		drowGraph();
 		drowFruit();
 		drowRobot();
 	}
@@ -129,10 +130,7 @@ public class MyGameGUI {
 
 	//update the range
 	private  void setCanvas(oop_graph g) {	
-		double xmin=Double.MAX_VALUE;
-		double xmax=Double.MIN_VALUE;
-		double ymin=Double.MAX_VALUE;
-		double ymax=Double.MIN_VALUE;
+		
 
 		Collection<oop_node_data> v =g.getV();
 		Iterator<oop_node_data> it=v.iterator();
@@ -230,6 +228,7 @@ public class MyGameGUI {
 			game = Game_Server.getServer(scenario_num);
 			g=init();
 			initGame();
+			drowGraph();
 			guiGame();
 			try {
 				JSONObject line = new JSONObject(game.toString());
@@ -243,11 +242,14 @@ public class MyGameGUI {
 				game.startGame();
 				while(game.isRunning()) {
 					StdDraw.clear();
+					StdDraw.enableDoubleBuffering();
+					drowGraph();
 					StdDraw.setPenColor(Color.BLACK);
-					StdDraw.text(35.187530535916  , 32.10785303529412 , "time to end 00:"+game.timeToEnd()/1000  );
-					StdDraw.text(35.207929486682, 32.10785303529412 , "result:"+sumResult()  );
-
+					StdDraw.text(xmin+0.0003 , ymin+0.0005 , "time to end 00:"+game.timeToEnd()/1000  );
+					StdDraw.text(xmin+0.00001, ymin , "result:"+sumResult());
 					List<String> robots = game.move();
+					graph_algorithms ag= new Graph_Algo();
+					ag.init(g);
 					for(String robot : robots) {
 						String robot_json = robot;
 						line = new JSONObject(robot_json);
@@ -255,26 +257,28 @@ public class MyGameGUI {
 						int id = r.getInt("id");
 						int src = r.getInt("src");
 						int dest = r.getInt("dest");
-
 						if(dest==-1) {	
-							String nextnode = JOptionPane.showInputDialog(null, "choose were you want to go with the robot  : ");
-							graph_algorithms ag= new Graph_Algo();
-							ag.init(g);
+							guiGame();
+							StdDraw.show();
+							String nextnode = JOptionPane.showInputDialog(null, "choose were you want to go with the robot "+id+" : ");
 							List<oop_node_data> ro= ag.shortestPath(src, Integer.parseInt(nextnode));
 							System.out.println(ro);
 							for(oop_node_data n:ro) {
 								game.chooseNextEdge(id, n.getKey());
 								game.move();
+								
 							}
 						}
 					}
-					StdDraw.show();
-//					guiGame();
+
+					guiGame();
 					Thread.sleep(100);
+					StdDraw.show();
 				}
 				StdDraw.setPenColor(Color.BLACK);
 				StdDraw.picture(35.197730011299,32.104700000825,"game over.png");
 				StdDraw.text(35.197730011299, 32.10469393931, "results: "+ 	sumResult());
+				StdDraw.show();
 			}
 			catch (JSONException | InterruptedException e) {
 				e.printStackTrace();
@@ -291,6 +295,7 @@ public class MyGameGUI {
 			game = Game_Server.getServer(scenario_num);
 			g=init();
 			initGame();
+			drowGraph();
 			guiGame();
 		}
 		try {
@@ -305,10 +310,13 @@ public class MyGameGUI {
 			guiGame();
 			game.startGame();
 			while(game.isRunning()) {
+
 				StdDraw.clear();
+				StdDraw.enableDoubleBuffering();
+				drowGraph();
 				StdDraw.setPenColor(Color.BLACK);
-				StdDraw.text(35.187530535916  , 32.10785303529412 , "time to end 00:"+game.timeToEnd()/1000  );
-				StdDraw.text(35.207929486682, 32.10785303529412 , "result:"+sumResult()  );
+				StdDraw.text(xmin+0.0003 , ymin+0.0005 , "time to end 00:"+game.timeToEnd()/1000  );
+				StdDraw.text(xmin+0.00001, ymin , "result:"+sumResult());
 
 				List<String> robots = game.move();
 				for(String robot : robots) {
@@ -322,20 +330,21 @@ public class MyGameGUI {
 					if(dest==-1) {	
 						dest = nextNode(src);
 						game.chooseNextEdge(id, dest);
-					}
+						game.move();
+					}				
 				}
 				guiGame();
-				Thread.sleep(10);
+				Thread.sleep(100);
+				StdDraw.show();
 			}
 			StdDraw.setPenColor(Color.BLACK);
 			StdDraw.picture(35.197730011299,32.104700000825,"game over.png");
 			StdDraw.text(35.197730011299, 32.10469393931, "results: "+ 	sumResult());
+			StdDraw.show();
 		}
 
 		catch (Exception e) {
 			e.printStackTrace();
-			System.out.println(e.getMessage());
-
 		}
 
 	}

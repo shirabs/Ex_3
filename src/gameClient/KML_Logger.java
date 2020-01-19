@@ -19,13 +19,13 @@ public class KML_Logger {
 	public KML_Logger(int level) {
 		this.level = level;
 		info = new StringBuilder();
-		kmlStart();
+		KMLStart();
 	}
 
 
 	//  opening string for the KML file. Set the elements of the game such as: node, fruit and robot that will be added as a placemark to the KML file.
 
-	public void kmlStart()
+	public void KMLStart()
 	{
 		info.append(
 				"<?xml version=\"1.0\" encoding=\"UTF-8\"?>\r\n" +
@@ -94,7 +94,7 @@ public class KML_Logger {
 
 
 	//	  Connect the closing string for the KML file.
-	public void kmlEnd()
+	public void KMLEnd()
 	{
 		info.append("  \r\n</Document>\r\n" +  "</kml>" );
 		try
