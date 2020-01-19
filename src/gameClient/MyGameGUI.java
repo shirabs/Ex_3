@@ -14,7 +14,6 @@ import javax.swing.JOptionPane;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import com.sun.org.apache.bcel.internal.classfile.Node;
 
 import Server.*;
 import oop_dataStructure.*;
@@ -68,7 +67,7 @@ public class MyGameGUI {
 	//draw the robot on the graph
 	private void drowRobot() {
 		List<String> robot=game.getRobots();
-				System.out.println(robot);
+		System.out.println(robot);
 
 		try {
 			for(String r:robot) {
@@ -253,7 +252,6 @@ public class MyGameGUI {
 				guiGame();
 				game.startGame();
 				while(game.isRunning()) {
-					StdDraw.clear();
 					StdDraw.setPenColor(Color.BLACK);
 					StdDraw.text(35.187530535916  , 32.10785303529412 , "time to end 00:"+game.timeToEnd()/1000  );
 					List<String> robots = game.move();
@@ -268,19 +266,23 @@ public class MyGameGUI {
 						if(dest==-1) {	
 							String nextnode = JOptionPane.showInputDialog(null, "choose were you want to go with the robot  : ");
 							graph_algorithms ag= new Graph_Algo();
+							ag.init(g);
 							List<oop_node_data> ro= ag.shortestPath(src, Integer.parseInt(nextnode));
+							System.out.println(ro);
 							for(oop_node_data n:ro) {
 								game.chooseNextEdge(id, n.getKey());
 								game.move();
 							}
 						}
 					}
+
+					StdDraw.clear();
 					guiGame();
 					Thread.sleep(300);
 				}
 				gameOver();
 			}
-			catch (JSONException e) {
+			catch (JSONException | InterruptedException e) {
 				e.printStackTrace();
 			}
 		}
@@ -295,6 +297,7 @@ public class MyGameGUI {
 			game = Game_Server.getServer(scenario_num);
 			g=init();
 			initGame();
+			guiGame();
 		}
 		try {
 			JSONObject line = new JSONObject(game.toString());
@@ -326,7 +329,7 @@ public class MyGameGUI {
 					}
 				}
 				guiGame();
-				Thread.sleep(300);
+				Thread.sleep(50);
 			}
 			gameOver();
 		}
