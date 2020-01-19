@@ -43,8 +43,11 @@ public class MyGameGUI {
 	}
 
 	//drow the level game
-	private void guiGame() {
+	private void guiGameGraph() {
 		drowGraph();
+	}
+	private void guiGame() {
+		//drowGraph();
 		drowFruit();
 		drowRobot();
 	}
@@ -275,7 +278,6 @@ public class MyGameGUI {
 							}
 						}
 					}
-
 					StdDraw.clear();
 					guiGame();
 					Thread.sleep(300);
@@ -297,6 +299,7 @@ public class MyGameGUI {
 			game = Game_Server.getServer(scenario_num);
 			g=init();
 			initGame();
+			guiGameGraph();
 			guiGame();
 		}
 		try {
@@ -311,7 +314,10 @@ public class MyGameGUI {
 			guiGame();
 			game.startGame();
 			while(game.isRunning()) {
+				
 				StdDraw.clear();
+				StdDraw.enableDoubleBuffering();
+				guiGameGraph();
 				StdDraw.setPenColor(Color.BLACK);
 				StdDraw.text(35.187530535916  , 32.10785303529412 , "time to end 00:"+game.timeToEnd()/1000  );
 				List<String> robots = game.move();
@@ -326,18 +332,21 @@ public class MyGameGUI {
 					if(dest==-1) {	
 						dest = nextNode(src);
 						game.chooseNextEdge(id, dest);
-					}
+					}					
 				}
+				
+				
 				guiGame();
-				Thread.sleep(50);
+				Thread.sleep(100);
+				StdDraw.show();
 			}
 			gameOver();
+			StdDraw.show();
+
 		}
 
 		catch (Exception e) {
 			e.printStackTrace();
-			System.out.println(e.getMessage());
-
 		}
 
 	}
