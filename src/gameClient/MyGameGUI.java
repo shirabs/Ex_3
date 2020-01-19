@@ -2,8 +2,7 @@ package gameClient;
 
 
 import java.awt.Color;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
+
 import java.io.FileNotFoundException;
 import java.io.PrintWriter;
 import java.util.ArrayList;
@@ -11,10 +10,9 @@ import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
 
-import javax.swing.JButton;
-import javax.swing.JFrame;
+
 import javax.swing.JOptionPane;
-import javax.swing.event.AncestorListener;
+
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -42,8 +40,9 @@ public class MyGameGUI {
 	double ymax=Double.MIN_VALUE;
 
 	public MyGameGUI() {
-		String game = (JOptionPane.showInputDialog(null, "choose game ","game",
-				JOptionPane.PLAIN_MESSAGE,null,new Object[] {"playManualGame","PlayAotuGame"},"select")).toString();
+		StdDraw.setCanvasSize(1300, 600);
+		String game = (JOptionPane.showInputDialog(null, "choose type game ","game",
+				JOptionPane.PLAIN_MESSAGE,null,new Object[] {"play Manual Game","Play Aotu Game"},"select")).toString();
 		if(game=="playManualGame") {
 			playManualGame();
 		}
@@ -74,9 +73,9 @@ public class MyGameGUI {
 			double x= temp.getLocation().x();
 			double y= temp.getLocation().y();
 			if(temp.getType()==1)
-				StdDraw.picture(x, y, "banna.png",0.0005,0.0004);
+				StdDraw.picture(x, y, "dollar.png",0.0005,0.0004);
 			else
-				StdDraw.picture(x, y, "tree.png",0.0005,0.0004);
+				StdDraw.picture(x, y, "monye.png",0.0005,0.0004);
 		}
 	}
 
@@ -93,7 +92,7 @@ public class MyGameGUI {
 				String[] point = pos.split(",");
 				double x = Double.parseDouble(point[0]);
 				double y = Double.parseDouble(point[1]);
-				StdDraw.picture(x, y, "robot.png",0.0005,0.0005);
+				StdDraw.picture(x, y, "robot1.png",0.0005,0.0005);
 			}
 		}
 		catch (Exception e) {
@@ -104,12 +103,11 @@ public class MyGameGUI {
 
 	//draw the graph
 	private void drawGraph() {
-		StdDraw.picture((xmax+xmin)/2, (ymax+ymin)/2,"tapet.jpg",0.022,0.0079);
-
+		StdDraw.picture((xmax+xmin)/2, (ymax+ymin)/2,"mmm.png",0.022,0.0079);
 		//draw point node
 		Collection<oop_node_data> v =g.getV();
 		Iterator<oop_node_data> it=v.iterator();
-		StdDraw.setPenRadius(0.015);
+		StdDraw.setPenRadius(0.02);
 		StdDraw.setPenColor(Color.BLACK);
 		while (it.hasNext()) {
 			oop_node_data node=it.next();
@@ -126,8 +124,8 @@ public class MyGameGUI {
 				Iterator<oop_edge_data> it2=e.iterator();
 				while (it2.hasNext()) {
 					oop_edge_data edge=it2.next();
-					StdDraw.setPenRadius(0.0005);
-					StdDraw.setPenColor(Color.BLUE);
+					StdDraw.setPenRadius(0.0015);
+					StdDraw.setPenColor(Color.BLACK);
 					double x1=g.getNode(edge.getSrc()).getLocation().x();
 					double x2=g.getNode(edge.getDest()).getLocation().x();
 					double y1=g.getNode(edge.getSrc()).getLocation().y();

@@ -9,162 +9,27 @@
         </Icon>
         <hotSpot x="32" y="1" xunits="pixels" yunits="pixels"/>
       </IconStyle>
-    </Style> <Style id="fruit-tree">
+    </Style> <Style id="fruit_-1">
       <IconStyle>
         <Icon>
-          <href>http://maps.google.com/mapfiles/kml/pal5/icon49.png</href>
+          <href>http://maps.google.com/mapfiles/kml/paddle/purple-stars.png</href>
         </Icon>
         <hotSpot x="32" y="1" xunits="pixels" yunits="pixels"/>
       </IconStyle>
-    </Style> <Style id="fruit-banna">
+    </Style> <Style id="fruit_1">
       <IconStyle>
         <Icon>
-          <href>http://maps.google.com/mapfiles/kml/pal5/icon56.png</href>
+          <href>http://maps.google.com/mapfiles/kml/paddle/red-stars.png</href>
         </Icon>
         <hotSpot x="32" y="1" xunits="pixels" yunits="pixels"/>
       </IconStyle>
     </Style> <Style id="robot">
       <IconStyle>
         <Icon>
-          <href>http://maps.google.com/mapfiles/kml/pal4/icon26.png></href>
+          <href>http://maps.google.com/mapfiles/kml/shapes/motorcycling.png></href>
         </Icon>
         <hotSpot x="32" y="1" xunits="pixels" yunits="pixels"/>
       </IconStyle>
-    </Style>    <Placemark>
-      <TimeStamp>
-        <when>2020/01/19 12:57:59</when>
-      </TimeStamp>
-      <styleUrl>#robot</styleUrl>
-      <Point>
-        <coordinates>35.207151268054346,32.10259023385377,0.0</coordinates>
-      </Point>
-    </Placemark>
-    <Placemark>
-      <TimeStamp>
-        <when>2020/01/19 12:57:59</when>
-      </TimeStamp>
-      <styleUrl>#fruit-tree</styleUrl>
-      <Point>
-        <coordinates>36.207151268054346,33.10259023385377,0.0</coordinates>
-      </Point>
-    </Placemark>
-    <Placemark>
-      <TimeStamp>
-        <when>2020/01/19 12:57:59</when>
-      </TimeStamp>
-      <styleUrl>#robot</styleUrl>
-      <Point>
-        <coordinates>37.207151268054346,34.10259023385377,0.0</coordinates>
-      </Point>
-    </Placemark>
-    <Placemark>
-      <TimeStamp>
-        <when>2020/01/19 12:57:59</when>
-      </TimeStamp>
-      <styleUrl>#robot</styleUrl>
-      <Point>
-        <coordinates>38.207151268054346,35.10259023385377,0.0</coordinates>
-      </Point>
-    </Placemark>
-    <Placemark>
-      <TimeStamp>
-        <when>2020/01/19 12:57:59</when>
-      </TimeStamp>
-      <styleUrl>#robot</styleUrl>
-      <Point>
-        <coordinates>39.207151268054346,36.10259023385377,0.0</coordinates>
-      </Point>
-    </Placemark>
-    <Placemark>
-      <TimeStamp>
-        <when>2020/01/19 12:57:59</when>
-      </TimeStamp>
-      <styleUrl>#fruit-banana</styleUrl>
-      <Point>
-        <coordinates>40.207151268054346,37.10259023385377,0.0</coordinates>
-      </Point>
-    </Placemark>
-    <Placemark>
-      <TimeStamp>
-        <when>2020/01/19 12:57:59</when>
-      </TimeStamp>
-      <styleUrl>#fruit-tree</styleUrl>
-      <Point>
-        <coordinates>41.207151268054346,38.10259023385377,0.0</coordinates>
-      </Point>
-    </Placemark>
-    <Placemark>
-      <TimeStamp>
-        <when>2020/01/19 12:57:59</when>
-      </TimeStamp>
-      <styleUrl>#node</styleUrl>
-      <Point>
-        <coordinates>42.207151268054346,39.10259023385377,0.0</coordinates>
-      </Point>
-    </Placemark>
-    <Placemark>
-      <TimeStamp>
-        <when>2020/01/19 12:57:59</when>
-      </TimeStamp>
-      <styleUrl>#robot</styleUrl>
-      <Point>
-        <coordinates>43.207151268054346,40.10259023385377,0.0</coordinates>
-      </Point>
-    </Placemark>
-    <Placemark>
-      <TimeStamp>
-        <when>2020/01/19 12:57:59</when>
-      </TimeStamp>
-      <styleUrl>#node</styleUrl>
-      <Point>
-        <coordinates>44.207151268054346,41.10259023385377,0.0</coordinates>
-      </Point>
-    </Placemark>
-    <Placemark>
-      <TimeStamp>
-        <when>2020/01/19 12:57:59</when>
-      </TimeStamp>
-      <styleUrl>#robot</styleUrl>
-      <Point>
-        <coordinates>45.207151268054346,42.10259023385377,0.0</coordinates>
-      </Point>
-    </Placemark>
-    <Placemark>
-      <TimeStamp>
-        <when>2020/01/19 12:57:59</when>
-      </TimeStamp>
-      <styleUrl>#fruit-banana</styleUrl>
-      <Point>
-        <coordinates>46.207151268054346,43.10259023385377,0.0</coordinates>
-      </Point>
-    </Placemark>
-    <Placemark>
-      <TimeStamp>
-        <when>2020/01/19 12:57:59</when>
-      </TimeStamp>
-      <styleUrl>#node</styleUrl>
-      <Point>
-        <coordinates>47.207151268054346,44.10259023385377,0.0</coordinates>
-      </Point>
-    </Placemark>
-    <Placemark>
-      <TimeStamp>
-        <when>2020/01/19 12:57:59</when>
-      </TimeStamp>
-      <styleUrl>#robot</styleUrl>
-      <Point>
-        <coordinates>48.207151268054346,45.10259023385377,0.0</coordinates>
-      </Point>
-    </Placemark>
-    <Placemark>
-      <TimeStamp>
-        <when>2020/01/19 12:57:59</when>
-      </TimeStamp>
-      <styleUrl>#node</styleUrl>
-      <Point>
-        <coordinates>49.207151268054346,46.10259023385377,0.0</coordinates>
-      </Point>
-    </Placemark>
-  
+    </Style>  
 </Document>
 </kml>
