@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <kml xmlns="http://earth.google.com/kml/2.2">
   <Document>
-    <name>Game stage :10</name>
+    <name>Game stage :18</name>
  <Style id="node">
       <IconStyle>
         <Icon>
@@ -32,79 +32,61 @@
       </IconStyle>
     </Style>    <Placemark>
       <TimeStamp>
-        <when>2020/01/19 12:58:10</when>
+        <when>2020/01/19 12:58:39</when>
       </TimeStamp>
-      <styleUrl>#fruit-banana</styleUrl>
+      <styleUrl>#fruit-tree</styleUrl>
       <Point>
         <coordinates>35.207151268054346,32.10259023385377,0.0</coordinates>
       </Point>
     </Placemark>
     <Placemark>
       <TimeStamp>
-        <when>2020/01/19 12:58:10</when>
+        <when>2020/01/19 12:58:39</when>
       </TimeStamp>
-      <styleUrl>#robot</styleUrl>
+      <styleUrl>#node</styleUrl>
       <Point>
         <coordinates>36.207151268054346,33.10259023385377,0.0</coordinates>
       </Point>
     </Placemark>
     <Placemark>
       <TimeStamp>
-        <when>2020/01/19 12:58:10</when>
+        <when>2020/01/19 12:58:39</when>
       </TimeStamp>
-      <styleUrl>#fruit-banana</styleUrl>
-      <Point>
-        <coordinates>40.207151268054346,37.10259023385377,0.0</coordinates>
-      </Point>
-    </Placemark>
-    <Placemark>
-      <TimeStamp>
-        <when>2020/01/19 12:58:10</when>
-      </TimeStamp>
-      <styleUrl>#node</styleUrl>
-      <Point>
-        <coordinates>41.207151268054346,38.10259023385377,0.0</coordinates>
-      </Point>
-    </Placemark>
-    <Placemark>
-      <TimeStamp>
-        <when>2020/01/19 12:58:10</when>
-      </TimeStamp>
-      <styleUrl>#robot</styleUrl>
+      <styleUrl>#fruit-tree</styleUrl>
       <Point>
         <coordinates>42.207151268054346,39.10259023385377,0.0</coordinates>
       </Point>
     </Placemark>
     <Placemark>
       <TimeStamp>
-        <when>2020/01/19 12:58:10</when>
+        <when>2020/01/19 12:58:39</when>
       </TimeStamp>
-      <styleUrl>#fruit-banana</styleUrl>
+      <styleUrl>#fruit-tree</styleUrl>
       <Point>
         <coordinates>43.207151268054346,40.10259023385377,0.0</coordinates>
       </Point>
     </Placemark>
     <Placemark>
       <TimeStamp>
-        <when>2020/01/19 12:58:10</when>
+        <when>2020/01/19 12:58:39</when>
       </TimeStamp>
-      <styleUrl>#node</styleUrl>
+      <styleUrl>#robot</styleUrl>
       <Point>
         <coordinates>44.207151268054346,41.10259023385377,0.0</coordinates>
       </Point>
     </Placemark>
     <Placemark>
       <TimeStamp>
-        <when>2020/01/19 12:58:10</when>
+        <when>2020/01/19 12:58:39</when>
       </TimeStamp>
-      <styleUrl>#node</styleUrl>
+      <styleUrl>#fruit-banana</styleUrl>
       <Point>
         <coordinates>45.207151268054346,42.10259023385377,0.0</coordinates>
       </Point>
     </Placemark>
     <Placemark>
       <TimeStamp>
-        <when>2020/01/19 12:58:10</when>
+        <when>2020/01/19 12:58:39</when>
       </TimeStamp>
       <styleUrl>#fruit-banana</styleUrl>
       <Point>
@@ -113,18 +95,18 @@
     </Placemark>
     <Placemark>
       <TimeStamp>
-        <when>2020/01/19 12:58:10</when>
+        <when>2020/01/19 12:58:39</when>
       </TimeStamp>
-      <styleUrl>#fruit-tree</styleUrl>
+      <styleUrl>#robot</styleUrl>
       <Point>
         <coordinates>48.207151268054346,45.10259023385377,0.0</coordinates>
       </Point>
     </Placemark>
     <Placemark>
       <TimeStamp>
-        <when>2020/01/19 12:58:10</when>
+        <when>2020/01/19 12:58:39</when>
       </TimeStamp>
-      <styleUrl>#fruit-tree</styleUrl>
+      <styleUrl>#robot</styleUrl>
       <Point>
         <coordinates>49.207151268054346,46.10259023385377,0.0</coordinates>
       </Point>
