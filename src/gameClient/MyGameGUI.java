@@ -40,6 +40,8 @@ public class MyGameGUI {
 		//set x-axis and y-axis	
 		StdDraw.setCanvasSize(1300,600);
 		setCanvas(g);
+		
+		
 	}
 
 	//drow the level game
@@ -85,18 +87,6 @@ public class MyGameGUI {
 		}
 	}
 
-	//draw the robot in graph menul
-	private void drawRobotMenul(OOP_NodeData a) {
-
-		try {
-			double x=a.getLocation().x();
-			double y=a.getLocation().y();
-			StdDraw.picture(x, y, "robot.png",0.0005,0.0005);
-
-		}
-		catch (Exception e) {
-		}
-	}
 
 	//drow the graph
 	private void drowGraph() {
@@ -252,8 +242,11 @@ public class MyGameGUI {
 				guiGame();
 				game.startGame();
 				while(game.isRunning()) {
+					StdDraw.clear();
 					StdDraw.setPenColor(Color.BLACK);
 					StdDraw.text(35.187530535916  , 32.10785303529412 , "time to end 00:"+game.timeToEnd()/1000  );
+					StdDraw.text(35.207929486682, 32.10785303529412 , "result:"+sumResult()  );
+
 					List<String> robots = game.move();
 					for(String robot : robots) {
 						String robot_json = robot;
@@ -275,12 +268,13 @@ public class MyGameGUI {
 							}
 						}
 					}
-
-					StdDraw.clear();
-					guiGame();
-					Thread.sleep(300);
+					StdDraw.show();
+//					guiGame();
+					Thread.sleep(100);
 				}
-				gameOver();
+				StdDraw.setPenColor(Color.BLACK);
+				StdDraw.picture(35.197730011299,32.104700000825,"game over.png");
+				StdDraw.text(35.197730011299, 32.10469393931, "results: "+ 	sumResult());
 			}
 			catch (JSONException | InterruptedException e) {
 				e.printStackTrace();
@@ -314,6 +308,8 @@ public class MyGameGUI {
 				StdDraw.clear();
 				StdDraw.setPenColor(Color.BLACK);
 				StdDraw.text(35.187530535916  , 32.10785303529412 , "time to end 00:"+game.timeToEnd()/1000  );
+				StdDraw.text(35.207929486682, 32.10785303529412 , "result:"+sumResult()  );
+
 				List<String> robots = game.move();
 				for(String robot : robots) {
 					String robot_json = robot;
@@ -329,9 +325,11 @@ public class MyGameGUI {
 					}
 				}
 				guiGame();
-				Thread.sleep(50);
+				Thread.sleep(10);
 			}
-			gameOver();
+			StdDraw.setPenColor(Color.BLACK);
+			StdDraw.picture(35.197730011299,32.104700000825,"game over.png");
+			StdDraw.text(35.197730011299, 32.10469393931, "results: "+ 	sumResult());
 		}
 
 		catch (Exception e) {
@@ -343,7 +341,7 @@ public class MyGameGUI {
 	}
 
 	// print to the window the result of the game	
-	private void gameOver() {
+	private double sumResult() {
 		try {
 			double result=0;
 			for(String r:game.getRobots()) {
@@ -351,13 +349,12 @@ public class MyGameGUI {
 				JSONObject s = line.getJSONObject("Robot");
 				result+= s.getDouble("value");
 			}
-			StdDraw.setPenColor(Color.BLACK);
-			StdDraw.picture(35.197730011299,32.104700000825,"game over.png");
-			StdDraw.text(35.197730011299, 32.10469393931, "results: "+ result);
+			return result;
 		}
 		catch (Exception e) {
 			e.printStackTrace();
 		}
+		return (Double) null;
 	}
 
 	//return the hext node to move from the short path to the fruit	
@@ -365,6 +362,7 @@ public class MyGameGUI {
 		graph_algorithms ag=new Graph_Algo();
 		ag.init(g);
 		int a= foundFruitEdge(f.get(0).getLocation()).getDest();
+		double spd=ag.shortestPathDist(src, a);
 		List<oop_node_data> sp=ag.shortestPath(src,a);
 		for( fruits fruit:f ) {
 			a= foundFruitEdge(fruit.getLocation()).getDest();
@@ -372,7 +370,8 @@ public class MyGameGUI {
 				a= foundFruitEdge(fruit.getLocation()).getSrc();
 			}
 			List<oop_node_data> spt=ag.shortestPath(src, a);
-			if(spt.size()<=sp.size()||sp.size()==1){
+			double spdt=ag.shortestPathDist(src, a);
+			if(spd>spdt||sp.size()==1){
 				sp=spt;
 			}
 		}
