@@ -43,7 +43,7 @@ public class MyGameGUI {
 		StdDraw.setCanvasSize(1300, 600);
 		String game = (JOptionPane.showInputDialog(null, "choose type game ","game",
 				JOptionPane.PLAIN_MESSAGE,null,new Object[] {"play Manual Game","Play Aotu Game"},"select")).toString();
-		if(game=="playManualGame") {
+		if(game=="play Manual Game") {
 			playManualGame();
 		}
 		else {
@@ -396,6 +396,7 @@ public class MyGameGUI {
 			double spdt=ag.shortestPathDist(src, a);
 			if(spd>spdt||sp.size()==1){
 				sp=spt;
+				spd=sptd;
 			}
 		}
 		return sp.get(1).getKey();
