@@ -38,18 +38,19 @@ public class MyGameGUI {
 	double xmax=Double.MIN_VALUE;
 	double ymin=Double.MAX_VALUE;
 	double ymax=Double.MIN_VALUE;
+	private static KML_Logger kml;
 
 	public MyGameGUI() {
 		StdDraw.setCanvasSize(1300, 600);
 		String game = (JOptionPane.showInputDialog(null, "choose type game ","game",
 				JOptionPane.PLAIN_MESSAGE,null,new Object[] {"play Manual Game","Play Aotu Game"},"select")).toString();
-		if(game=="playManualGame") {
+		if(game=="play Manual Game") {
 			playManualGame();
 		}
 		else {
 			PlayAotuGame();
 		}
-		
+
 	}
 
 	private void initGame() {
@@ -93,6 +94,8 @@ public class MyGameGUI {
 				double x = Double.parseDouble(point[0]);
 				double y = Double.parseDouble(point[1]);
 				StdDraw.picture(x, y, "robot1.png",0.0005,0.0005);
+				kml.Place_Mark("robot.png",pos);
+
 			}
 		}
 		catch (Exception e) {
@@ -196,10 +199,12 @@ public class MyGameGUI {
 				if(type==-1) {
 					Fruit t= new Fruit(value,pos1,new OOP_Edge(edge.getDest(), edge.getSrc()));
 					f.add(t);
+					kml.Place_Mark("monye", pos);
 				}
 				else {
 					Fruit t= new Fruit(value,pos1,edge);
 					f.add(t);
+					kml.Place_Mark("dollar", pos);
 				}
 			}
 		}
@@ -306,6 +311,7 @@ public class MyGameGUI {
 		String num = JOptionPane.showInputDialog(null, "Enter a scenario you want to play : ");
 		int scenario_num = Integer.parseInt(num);
 		if(scenario_num>=0 && scenario_num<=23) {
+			kml=new KML_Logger(scenario_num);
 			game = Game_Server.getServer(scenario_num);
 			g=init();
 			initGame();
@@ -332,7 +338,7 @@ public class MyGameGUI {
 				StdDraw.text(xmin+0.0003 , ymin+0.0005 , "time to end 00:"+game.timeToEnd()/1000  );
 				StdDraw.text(xmin+0.00001, ymin , "result:"+sumResult());
 
-				List<String> robots = game.move();
+				List<String> robots = game.getRobots();
 				for(String robot : robots) {
 					String robot_json = robot;
 					line = new JSONObject(robot_json);
@@ -344,17 +350,18 @@ public class MyGameGUI {
 					if(dest==-1) {	
 						dest = nextNode(src);
 						game.chooseNextEdge(id, dest);
-						game.move();
-					}				
+					}			
+					game.move();
 				}
 				guiGame();
-				Thread.sleep(100);
+				//				Thread.sleep(100);
 				StdDraw.show();
 			}
 			StdDraw.setPenColor(Color.BLACK);
 			StdDraw.picture(35.197730011299,32.104700000825,"game over.png");
 			StdDraw.text(35.197730011299, 32.10469393931, "results: "+ 	sumResult());
 			StdDraw.show();
+			kml.KML_Stop();
 		}
 
 		catch (Exception e) {
