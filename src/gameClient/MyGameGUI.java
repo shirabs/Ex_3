@@ -39,6 +39,7 @@ public class MyGameGUI {
 	double ymin=Double.MAX_VALUE;
 	double ymax=Double.MIN_VALUE;
 	private static KML_Logger kml;
+	public static int i=0;
 
 	public MyGameGUI() {
 		StdDraw.setCanvasSize(1300, 600);
@@ -83,7 +84,8 @@ public class MyGameGUI {
 	//draw the robot on the graph
 	private void drawRobot() {
 		List<String> robot=game.getRobots();
-		System.out.println(robot);
+		System.out.println(i+")   "+robot);
+		i++;
 
 		try {
 			for(String r:robot) {
@@ -270,33 +272,37 @@ public class MyGameGUI {
 					List<String> robots = game.move();
 					graph_algorithms ag= new Graph_Algo();
 					ag.init(g);
-					for(String robot : robots) {
-						String robot_json = robot;
-						line = new JSONObject(robot_json);
-						JSONObject r = line.getJSONObject("Robot");
-						int id = r.getInt("id");
-						int src = r.getInt("src");
-						int dest = r.getInt("dest");
-						if(dest==-1) {	
-							guiGame();
-							StdDraw.show();
-							String nextnode = JOptionPane.showInputDialog(null, "choose were you want to go with the robot "+id+" : ");
-							List<oop_node_data> ro= ag.shortestPath(src, Integer.parseInt(nextnode));
-							System.out.println(ro);
-							for(oop_node_data n:ro) {
-								game.chooseNextEdge(id, n.getKey());
-								game.move();
+					if(robots!=null) {
+						for(String robot : robots) {
+							String robot_json = robot;
+							line = new JSONObject(robot_json);
+							JSONObject r = line.getJSONObject("Robot");
+							int id = r.getInt("id");
+							int src = r.getInt("src");
+							int dest = r.getInt("dest");
+							if(dest==-1) {	
+								guiGame();
+								StdDraw.show();
+								String nextnode = JOptionPane.showInputDialog(null, "choose were you want to go with the robot "+id+" : ");
+								List<oop_node_data> ro= ag.shortestPath(src, Integer.parseInt(nextnode));
+								System.out.println(ro);
+								for(oop_node_data n:ro) {
+									game.chooseNextEdge(id, n.getKey());
+									game.move();
+								}
 							}
 						}
+						guiGame();
+						StdDraw.show();
+						Thread.sleep(100);
 					}
-					guiGame();
-					Thread.sleep(100);
-					StdDraw.show();
 				}
+				System.out.println(game.toString());
 				StdDraw.setPenColor(Color.BLACK);
 				StdDraw.picture(35.197730011299,32.104700000825,"game over.png");
 				StdDraw.text(35.197730011299, 32.10469393931, "results: "+ 	sumResult());
 				StdDraw.show();
+
 			}
 			catch (JSONException | InterruptedException e) {
 				e.printStackTrace();
@@ -337,25 +343,27 @@ public class MyGameGUI {
 				StdDraw.text(xmin+0.0003 , ymin+0.0005 , "time to end 00:"+game.timeToEnd()/1000  );
 				StdDraw.text(xmin+0.00001, ymin , "result:"+sumResult());
 
-				List<String> robots = game.getRobots();
-				for(String robot : robots) {
-					String robot_json = robot;
-					line = new JSONObject(robot_json);
-					JSONObject r = line.getJSONObject("Robot");
-					int id = r.getInt("id");
-					int src = r.getInt("src");
-					int dest = r.getInt("dest");
+				List<String> robots = game.move();
+				if(robots!=null) {
+					for(String robot : robots) {
+						String robot_json = robot;
+						line = new JSONObject(robot_json);
+						JSONObject r = line.getJSONObject("Robot");
+						int id = r.getInt("id");
+						int src = r.getInt("src");
+						int dest = r.getInt("dest");
 
-					if(dest==-1) {	
-						dest = nextNode(src);
-						game.chooseNextEdge(id, dest);
-					}			
-					game.move();
+						if(dest==-1) {	
+							dest = nextNode(src);
+							game.chooseNextEdge(id, dest);
+						}
+					}
+					guiGame();
+					StdDraw.show();
+					//				Thread.sleep(100);
 				}
-				guiGame();
-				//				Thread.sleep(100);
-				StdDraw.show();
 			}
+			System.out.println(game.toString());
 			StdDraw.setPenColor(Color.BLACK);
 			StdDraw.picture(35.197730011299,32.104700000825,"game over.png");
 			StdDraw.text(35.197730011299, 32.10469393931, "results: "+ 	sumResult());
@@ -398,11 +406,11 @@ public class MyGameGUI {
 			if(a==src) {
 				a= foundFruitEdge(fruit.getLocation()).getSrc();
 			}
-			List<oop_node_data> spt=ag.shortestPath(src, a);
+			spd=ag.shortestPathDist(src, a);
 			double spdt=ag.shortestPathDist(src, a);
 			if(spd>spdt||sp.size()==1){
-				sp=spt;
-				spd=spdt;
+				sp=ag.shortestPath(src, a);;
+
 			}
 		}
 		return sp.get(1).getKey();
