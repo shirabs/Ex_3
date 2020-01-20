@@ -1,8 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <classpath>
-	<classpathentry kind="src" path="data"/>
-	<classpathentry kind="src" path="docs"/>
-	<classpathentry kind="src" path="lib"/>
 	<classpathentry kind="src" path="src"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER">
 		<attributes>
@@ -14,5 +11,6 @@
 	<classpathentry kind="lib" path="lib/GameServer_v0.32.jar"/>
 	<classpathentry kind="lib" path="lib/mysql-connector-java-5.1.47.jar"/>
 	<classpathentry kind="lib" path="lib/java-json.jar"/>
+	<classpathentry kind="lib" path="lib/GameServer_v0.27.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

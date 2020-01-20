@@ -39,7 +39,7 @@ public class MyGameGUI {
 	double ymin=Double.MAX_VALUE;
 	double ymax=Double.MIN_VALUE;
 	private static KML_Logger kml;
-	public static int i=0;
+	
 
 	public MyGameGUI() {
 		StdDraw.setCanvasSize(1300, 600);
@@ -84,8 +84,8 @@ public class MyGameGUI {
 	//draw the robot on the graph
 	private void drawRobot() {
 		List<String> robot=game.getRobots();
-		System.out.println(i+")   "+robot);
-		i++;
+		System.out.println(robot);
+	
 
 		try {
 			for(String r:robot) {
@@ -354,13 +354,14 @@ public class MyGameGUI {
 						int dest = r.getInt("dest");
 
 						if(dest==-1) {	
+							System.out.println("ll");
 							dest = nextNode(src);
 							game.chooseNextEdge(id, dest);
 						}
 					}
 					guiGame();
 					StdDraw.show();
-					//				Thread.sleep(100);
+					//Thread.sleep(100);
 				}
 			}
 			System.out.println(game.toString());
