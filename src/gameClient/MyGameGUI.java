@@ -402,6 +402,7 @@ public class MyGameGUI {
 			double spdt=ag.shortestPathDist(src, a);
 			if(spd>spdt||sp.size()==1){
 				sp=spt;
+				spd=sptd;
 			}
 		}
 		return sp.get(1).getKey();
