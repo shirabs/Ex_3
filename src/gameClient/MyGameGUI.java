@@ -245,6 +245,7 @@ public class MyGameGUI {
 		int scenario_num = Integer.parseInt(num);
 		if(scenario_num>=0 && scenario_num<=23) {
 			game = Game_Server.getServer(scenario_num);
+			kml=new KML_Logger(scenario_num);
 			g=init();
 			initGame();
 			drawGraph();
@@ -285,11 +286,9 @@ public class MyGameGUI {
 							for(oop_node_data n:ro) {
 								game.chooseNextEdge(id, n.getKey());
 								game.move();
-
 							}
 						}
 					}
-
 					guiGame();
 					Thread.sleep(100);
 					StdDraw.show();
