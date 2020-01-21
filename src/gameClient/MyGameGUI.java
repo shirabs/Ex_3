@@ -39,7 +39,7 @@ public class MyGameGUI {
 	double ymin=Double.MAX_VALUE;
 	double ymax=Double.MIN_VALUE;
 	private static KML_Logger kml;
-	
+
 
 	public MyGameGUI() {
 		StdDraw.setCanvasSize(1300, 600);
@@ -85,7 +85,7 @@ public class MyGameGUI {
 	private void drawRobot() {
 		List<String> robot=game.getRobots();
 		System.out.println(robot);
-	
+
 
 		try {
 			for(String r:robot) {
@@ -354,7 +354,6 @@ public class MyGameGUI {
 						int dest = r.getInt("dest");
 
 						if(dest==-1) {	
-							System.out.println("ll");
 							dest = nextNode(src);
 							game.chooseNextEdge(id, dest);
 						}
@@ -404,14 +403,16 @@ public class MyGameGUI {
 		List<oop_node_data> sp=ag.shortestPath(src,a);
 		for( fruits fruit:f ) {
 			a= foundFruitEdge(fruit.getLocation()).getDest();
-			if(a==src) {
-				a= foundFruitEdge(fruit.getLocation()).getSrc();
+			int b= foundFruitEdge(fruit.getLocation()).getSrc();
+			List<oop_node_data> spt=ag.shortestPath(src, a);
+			double sptd=ag.shortestPathDist(src, a);
+			if(!spt.contains(g.getNode(b))) {
+				spt=ag.shortestPath(src, b);
+				sptd=ag.shortestPathDist(src, b);
 			}
-			spd=ag.shortestPathDist(src, a);
-			double spdt=ag.shortestPathDist(src, a);
-			if(spd>spdt||sp.size()==1){
-				sp=ag.shortestPath(src, a);;
-
+			if(spd>=sptd||sp.size()==1) {
+				sp=spt;
+				spd=sptd;
 			}
 		}
 		return sp.get(1).getKey();
