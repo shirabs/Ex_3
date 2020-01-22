@@ -44,12 +44,21 @@ public class MyGameGUI {
 	public MyGameGUI() {
 		StdDraw.setCanvasSize(1300, 600);
 		String game = (JOptionPane.showInputDialog(null, "choose type game ","game",
-				JOptionPane.PLAIN_MESSAGE,null,new Object[] {"play Manual Game","Play Aotu Game"},"select")).toString();
-		if(game=="play Manual Game") {
+				JOptionPane.PLAIN_MESSAGE,null,new Object[] {"play Manual Game","Play Auto Game","play Auto On Server"},"select")).toString();
+		switch(game) {
+		case("play Manual Game"):{
 			playManualGame();
+			break;
 		}
-		else {
-			PlayAotuGame();
+		case("Play Auto Game"):{
+			PlayAutoGame(-1, Integer.MAX_VALUE);
+			break;
+		}
+		case("play Auto On Server"):{
+			playAutoOnServer();
+			break;
+		}
+		default:
 		}
 
 	}
@@ -241,7 +250,7 @@ public class MyGameGUI {
 	}
 
 	//play manual game
-	public void playManualGame() {
+	private void playManualGame() {
 
 		String num = JOptionPane.showInputDialog(null, "Enter a scenario you want to play : ");
 		int scenario_num = Integer.parseInt(num);
@@ -312,9 +321,14 @@ public class MyGameGUI {
 	}
 
 	//	play automatic game
-	public void PlayAotuGame() {
-		String num = JOptionPane.showInputDialog(null, "Enter a scenario you want to play : ");
-		int scenario_num = Integer.parseInt(num);
+	private void PlayAutoGame(int scenario, int maxsteps   ) {
+		int scenario_num;
+		if(scenario < 0) {
+			String num = JOptionPane.showInputDialog(null, "Enter a scenario you want to play : ");
+			scenario_num = Integer.parseInt(num);
+		}
+		else
+			scenario_num=scenario;
 		if(scenario_num>=0 && scenario_num<=23) {
 			kml=new KML_Logger(scenario_num);
 			game = Game_Server.getServer(scenario_num);
@@ -335,16 +349,22 @@ public class MyGameGUI {
 			guiGame();
 			game.startGame();
 			while(game.isRunning()) {
-
+				if(maxsteps<=0) {
+					Thread.sleep(300);
+					continue;
+				}
 				StdDraw.clear();
 				StdDraw.enableDoubleBuffering();
 				drawGraph();
 				StdDraw.setPenColor(Color.BLACK);
+				StdDraw.text(xmax, ymax , "level:"+scenario_num);
 				StdDraw.text(xmin+0.0003 , ymin+0.0005 , "time to end 00:"+game.timeToEnd()/1000  );
 				StdDraw.text(xmin+0.00001, ymin , "result:"+sumResult());
-
+				Thread.sleep(60);
 				List<String> robots = game.move();
+				maxsteps--;
 				if(robots!=null) {
+					int speed=1;
 					for(String robot : robots) {
 						String robot_json = robot;
 						line = new JSONObject(robot_json);
@@ -352,15 +372,17 @@ public class MyGameGUI {
 						int id = r.getInt("id");
 						int src = r.getInt("src");
 						int dest = r.getInt("dest");
-
+						speed=r.getInt("speed");
 						if(dest==-1) {	
 							dest = nextNode(src);
 							game.chooseNextEdge(id, dest);
 						}
+						Thread.sleep(40/speed);
 					}
+
 					guiGame();
 					StdDraw.show();
-					//Thread.sleep(100);
+
 				}
 			}
 			System.out.println(game.toString());
@@ -377,6 +399,36 @@ public class MyGameGUI {
 
 	}
 
+	private void playAutoOnServer() {
+		int my_id = 207624222;
+		Game_Server.login(my_id);
+		int [] level= {0,1,3,5,9,11,13,16,19,20,23};
+		int [] grades= {125,436,713,570,480,1050,310,235,250,200,1000};
+		int [] moves= {290,580,580,500,580,580,580,290,580,290,1140};
+		for(int i=6;i<level.length;) {
+			try {
+				PlayAutoGame(level[i],moves[i]);
+				String endgame= game.toString();
+				JSONObject line;
+				try {
+					line = new JSONObject(endgame);
+					JSONObject g = line.getJSONObject("GameServer");
+					int grade = g.getInt("grade");
+					if(grade>=grades[i]) {
+						String remark = "data/"+level[i]+".kml";
+						game.sendKML(remark);
+						i++;
+					}	
+				} catch (JSONException e) {
+					e.printStackTrace();
+				}
+			}
+			catch(Exception ex) {
+				ex.printStackTrace();
+				System.out.println(ex.getMessage());
+			}
+		}
+	}
 	// print to the window the result of the game	
 	private double sumResult() {
 		try {
@@ -401,7 +453,7 @@ public class MyGameGUI {
 		int a= foundFruitEdge(f.get(0).getLocation()).getDest();
 		double spd=ag.shortestPathDist(src, a);
 		List<oop_node_data> sp=ag.shortestPath(src,a);
-		for( fruits fruit:f ) {
+		for( Fruit fruit:f ) {
 			a= foundFruitEdge(fruit.getLocation()).getDest();
 			int b= foundFruitEdge(fruit.getLocation()).getSrc();
 			List<oop_node_data> spt=ag.shortestPath(src, a);
