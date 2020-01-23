@@ -10,36 +10,35 @@ import java.time.LocalDateTime;
  * this is only for auto game.
  */
 
-class KML_Logger {
+public class KML_Logger {
 
 	private int stage;
 	private StringBuffer str;
 
 	/**
-	 * simple constructor
+	 *  constructor
 	 * @param level
 	 */
-	KML_Logger(int stage) {
+	public KML_Logger(int stage) {
 		this.stage = stage;
 		str = new StringBuffer();
-		//KML_Play();
 		KMLStart();
 	}
 
 
-	//	  this function initialise the working platform to KML
+	//	  this function restart the KML file
 	private void KMLStart(){
 		str.append(
 				"<?xml version=\"1.0\" encoding=\"UTF-8\"?>\r\n" +
 						"<kml xmlns=\"http://earth.google.com/kml/2.2\">\r\n" +
 						"  <Document>\r\n" +
-						"    <name>" + "Game stage :"+stage + "</name>" +"\r\n"
+						"    <name>" + "Game slevel :"+stage + "</name>" +"\r\n"
 				);
 		KMLnode();
 	}
 
 
-	//	  this function initialise the node icon to KML
+	//	  this function restart the node in the KML
 	private void KMLnode(){
 		str.append(" <Style id=\"node\">\r\n" +
 				"      <IconStyle>\r\n" +
@@ -54,7 +53,7 @@ class KML_Logger {
 	}
 
 
-	//	  this function initialise the Fruits icon to KML (Type 1 and -1)
+	//	  this function restart the Fruits in the KML ,-1 or 1 according to thr type
 
 	private void KMLFruit(){
 		str.append(
@@ -79,7 +78,7 @@ class KML_Logger {
 	}
 
 
-	//	  this function initialise the Robots icon to KML
+	//	  this function restart the Robots in the KML
 
 	private void KMLRobot(){
 		str.append(
@@ -95,11 +94,11 @@ class KML_Logger {
 	}
 
 
-	//	  this function is used in "paint"
-	//	  after painting each element
-	//	  the function enters the kml the location of each element
+	//	  this function used in gui
+	//	  after all move of robot and fruit
+	//	  the function enters to the kml the location of robot and fruit 
 
-	void Place_Mark(String id, String location){
+	public void Place_Mark(String id, String location){
 		LocalDateTime Present_time = LocalDateTime.now();
 		str.append(
 				"    <Placemark>\r\n" +
@@ -121,7 +120,7 @@ class KML_Logger {
 		SaveToFile();
 	}
 
-
+// this function save all the KML to file in the data location
 	private void SaveToFile(){
 		try {
 			File file=new File("data/"+stage+".kml");

@@ -70,14 +70,14 @@ public class MyGameGUI {
 		}
 		default:
 		}
-		System.out.println(read_DB.printLog(207624222));
-		System.out.println(read_DB.ToughStages(207624222));
+//				System.out.println(read_DB.printLog(207624222));
+//				System.out.println(read_DB.ToughStages(207624222));
 	}
 	//init the size windows
 	private void initGame() {
 		//set x-axis and y-axis	
 		StdDraw.setCanvasSize(1300,600);
-		setCanvas(g);
+		setCanvas();
 	}
 	//Shell function for drawing fruits and robots
 	private void guiGame() {
@@ -165,7 +165,7 @@ public class MyGameGUI {
 	}
 
 	//update the range
-	private  void setCanvas(oop_graph g) {	
+	private  void setCanvas() {	
 		Collection<oop_node_data> v =g.getV();
 		Iterator<oop_node_data> it=v.iterator();
 		while(it.hasNext()) {
@@ -350,7 +350,7 @@ public class MyGameGUI {
 		}
 		else
 			scenario_num=scenario;
-		if(scenario_num>=0 && scenario_num<=23) {
+		if(scenario_num>=0 && scenario_num<=23||scenario_num==-31) {
 			kml=new KML_Logger(scenario_num);
 			game = Game_Server.getServer(scenario_num);
 			g=init();
@@ -372,7 +372,7 @@ public class MyGameGUI {
 			while(game.isRunning()) {
 				if(maxsteps<=0) {
 					Thread.sleep(300);
-					continue;
+					game.stopGame();
 				}
 				StdDraw.clear();
 				StdDraw.enableDoubleBuffering();
@@ -384,8 +384,9 @@ public class MyGameGUI {
 				List<String> robots = game.move();
 				maxsteps--;
 				f_v=f;
+				int speed=1;
+
 				if(robots!=null) {
-					int speed=1;
 					for(String robot : robots) {
 						String robot_json = robot;
 						line = new JSONObject(robot_json);
@@ -396,17 +397,17 @@ public class MyGameGUI {
 						int dest = r.getInt("dest");
 						speed =r.getInt("speed");
 						if(dest==-1) {	
-							dest = nextNode13(src,id);
+							dest = nextNode(src);
 							game.chooseNextEdge(id, dest);
 							Thread.sleep(50);
 						}
 
-						else {Thread.sleep(70);}
+						else {Thread.sleep(50);}
 					}
 				}
 				guiGame();
 				StdDraw.show();
-				Thread.sleep(20);
+				Thread.sleep(50/speed);
 			}
 			System.out.println(game.toString());
 			StdDraw.setPenColor(Color.BLACK);
@@ -432,11 +433,10 @@ public class MyGameGUI {
 		int [] level= {0,1,3,5,9,11,13,16,19,20,23};
 		int [] grades= {125,436,713,570,480,1050,310,235,250,200,1000};
 		int [] moves= {290,580,580,500,580,580,580,290,580,290,1140};
-		for(int i=6;i<level.length;) {
+		for(int i=7;i<level.length;) {
 			try {
 				PlayAutoGame(level[i],moves[i]);
 				String endgame= game.toString();
-				//				Thread.sleep(1000);
 				JSONObject line;
 				line = new JSONObject(endgame);
 				JSONObject g = line.getJSONObject("GameServer");
@@ -447,8 +447,15 @@ public class MyGameGUI {
 					String remark = "data/"+level[i]+".kml";
 					game.sendKML(remark);
 					i++;
-					Thread.sleep(3000);
+
 				}
+				else {
+					StdDraw.text(35.197730011, 32.103, "return on this level"+level[i]);
+					StdDraw.show();
+				}
+				System.out.println(read_DB.printLog(207624222));
+				System.out.println(read_DB.ToughStages(207624222));
+				Thread.sleep(3000);
 			}
 			catch (JSONException |InterruptedException e) {
 				e.printStackTrace();
