@@ -25,7 +25,7 @@ public class SimpleDB {
 			int id3 = 207624222;
 			int level = 0;//1,2,3
 			printLog(id3);
-			//allUsers();	
+			allUsers();	
 //			String kml1 = getKML(id1,level);
 			System.out.println("***** KML1 file example: ******");
 			//System.out.println(kml1);

@@ -26,9 +26,6 @@ import utils.Graph_Algo;
 import utils.StdDraw;
 import utils.graph_algorithms;
 
-
-
-
 public class MyGameGUI {
 
 	private game_service game;
@@ -40,9 +37,13 @@ public class MyGameGUI {
 	double ymax=Double.MIN_VALUE;
 	private static KML_Logger kml;
 
-
+	/**
+	 * Constructor start my game 
+	 * Three methods of play:Manual, automatic and server.
+	 */
 	public MyGameGUI() {
-		StdDraw.setCanvasSize(1300, 600);
+		StdDraw.setCanvasSize(1300, 600);//size the windows
+		//Game Selection
 		String game = (JOptionPane.showInputDialog(null, "choose type game ","game",
 				JOptionPane.PLAIN_MESSAGE,null,new Object[] {"play Manual Game","Play Auto Game","play Auto On Server"},"select")).toString();
 		switch(game) {
@@ -62,14 +63,13 @@ public class MyGameGUI {
 		}
 
 	}
-
+	//init the size windows
 	private void initGame() {
 		//set x-axis and y-axis	
 		StdDraw.setCanvasSize(1300,600);
 		setCanvas(g);
-
 	}
-
+	//Shell function for drawing fruits and robots
 	private void guiGame() {
 		drawFruit();
 		drawRobot();
@@ -94,8 +94,6 @@ public class MyGameGUI {
 	private void drawRobot() {
 		List<String> robot=game.getRobots();
 		System.out.println(robot);
-
-
 		try {
 			for(String r:robot) {
 				JSONObject obj = new JSONObject(r);
@@ -158,8 +156,6 @@ public class MyGameGUI {
 
 	//update the range
 	private  void setCanvas(oop_graph g) {	
-
-
 		Collection<oop_node_data> v =g.getV();
 		Iterator<oop_node_data> it=v.iterator();
 		while(it.hasNext()) {
@@ -174,7 +170,10 @@ public class MyGameGUI {
 		StdDraw.setYscale(ymin-0.001,ymax+0.001);
 	}
 
-	//init the graph of the choose level
+	/**
+	 * init the graph of the choose level
+	 * @return
+	 */
 	private oop_graph init()  {
 		try {
 			PrintWriter pw= new PrintWriter("graph to the game");
@@ -189,7 +188,9 @@ public class MyGameGUI {
 		return null ;
 	}
 
-	//update the fruit from data game
+	/**
+	 * update the fruit from data game
+	 */
 	private void initfruit() {
 		f=new ArrayList<Fruit>();
 		List<String> fruit=game.getFruits();
@@ -224,7 +225,11 @@ public class MyGameGUI {
 		}
 	}
 
-	// found the edge that the fruit found their	
+	/**
+	 * found the edge that the fruit found their	
+	 * @param pos 
+	 * @return oop_edge_data
+	 */
 	private oop_edge_data foundFruitEdge(OOP_Point3D pos) {
 		Collection<oop_node_data> v = g.getV();
 		for(oop_node_data n : v) {
@@ -249,7 +254,9 @@ public class MyGameGUI {
 		return null;
 	}
 
-	//play manual game
+	/**
+	 * play manual game
+	 */
 	private void playManualGame() {
 
 		String num = JOptionPane.showInputDialog(null, "Enter a scenario you want to play : ");
@@ -320,7 +327,11 @@ public class MyGameGUI {
 
 	}
 
-	//	play automatic game
+	/**
+	 * play automatic game
+	 * @param the level game of scenario 
+	 * @param maxsteps
+	 */
 	private void PlayAutoGame(int scenario, int maxsteps   ) {
 		int scenario_num;
 		if(scenario < 0) {
@@ -360,7 +371,7 @@ public class MyGameGUI {
 				StdDraw.text(xmax, ymax , "level:"+scenario_num);
 				StdDraw.text(xmin+0.0003 , ymin+0.0005 , "time to end 00:"+game.timeToEnd()/1000  );
 				StdDraw.text(xmin+0.00001, ymin , "result:"+sumResult());
-				Thread.sleep(60);
+				//Thread.sleep(50);
 				List<String> robots = game.move();
 				maxsteps--;
 				if(robots!=null) {
@@ -376,12 +387,17 @@ public class MyGameGUI {
 						if(dest==-1) {	
 							dest = nextNode(src);
 							game.chooseNextEdge(id, dest);
+							Thread.sleep(50);
 						}
-						Thread.sleep(40/speed);
-					}
+						else {
+							Thread.sleep(50);
+						}
 
+					}
 					guiGame();
 					StdDraw.show();
+					Thread.sleep(108/speed);
+
 
 				}
 			}
@@ -398,7 +414,9 @@ public class MyGameGUI {
 		}
 
 	}
-
+	/**
+	 * game in the server
+	 */
 	private void playAutoOnServer() {
 		int my_id = 207624222;
 		Game_Server.login(my_id);
@@ -429,7 +447,10 @@ public class MyGameGUI {
 			}
 		}
 	}
-	// print to the window the result of the game	
+	/**
+	 *  print to the window the result of the game	
+	 * @return the record
+	 */
 	private double sumResult() {
 		try {
 			double result=0;
@@ -446,7 +467,11 @@ public class MyGameGUI {
 		return (Double) null;
 	}
 
-	//return the hext node to move from the short path to the fruit	
+	/**
+	 * return the hext node to move from the short path to the fruit	
+	 * @param src
+	 * @return
+	 */
 	private  int nextNode( int src) {
 		graph_algorithms ag=new Graph_Algo();
 		ag.init(g);
