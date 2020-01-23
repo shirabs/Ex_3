@@ -24,11 +24,11 @@ public class SimpleDB {
 			int id2 = 207904707;
 			int id3 = 207624222;
 			int level = 0;//1,2,3
-			printLog(id3);
-			//allUsers();	
-//			String kml1 = getKML(id1,level);
+//			printLog(id3);
+			allUsers();	
+//			String kml1 = getKML(id3,level);
 			System.out.println("***** KML1 file example: ******");
-			//System.out.println(kml1);
+//			System.out.println(kml1);
 		}
 	/** simply prints all the games as played by the users (in the database).
 	 * 
