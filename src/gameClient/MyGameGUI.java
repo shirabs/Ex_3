@@ -1,13 +1,21 @@
 package gameClient;
 
-
 import java.awt.Color;
+import java.io.BufferedReader;
 
 import java.io.FileNotFoundException;
+import java.io.FileReader;
+import java.io.IOException;
 import java.io.PrintWriter;
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Iterator;
+import java.util.LinkedList;
 import java.util.List;
 
 
@@ -31,6 +39,7 @@ public class MyGameGUI {
 	private game_service game;
 	private oop_graph g;
 	private List<Fruit> f=new ArrayList<Fruit>();
+	private List<Fruit> f_v=new ArrayList<Fruit>();
 	double xmin=Double.MAX_VALUE;
 	double xmax=Double.MIN_VALUE;
 	double ymin=Double.MAX_VALUE;
@@ -61,7 +70,8 @@ public class MyGameGUI {
 		}
 		default:
 		}
-
+		System.out.println(read_DB.printLog(207624222));
+		System.out.println(read_DB.ToughStages(207624222));
 	}
 	//init the size windows
 	private void initGame() {
@@ -165,7 +175,7 @@ public class MyGameGUI {
 			if(node.getLocation().y()<ymin) ymin=node.getLocation().y();
 			if(node.getLocation().y()>ymax) ymax=node.getLocation().y();
 		}
-		System.out.println(xmax+"    "+xmin+"    "+ymax+"    "+ymin);
+		//		System.out.println(xmax+"    "+xmin+"    "+ymax+"    "+ymin);
 		StdDraw.setXscale(xmin-0.001,xmax+0.001);
 		StdDraw.setYscale(ymin-0.001,ymax+0.001);
 	}
@@ -371,35 +381,32 @@ public class MyGameGUI {
 				StdDraw.text(xmax, ymax , "level:"+scenario_num);
 				StdDraw.text(xmin+0.0003 , ymin+0.0005 , "time to end 00:"+game.timeToEnd()/1000  );
 				StdDraw.text(xmin+0.00001, ymin , "result:"+sumResult());
-				//Thread.sleep(50);
 				List<String> robots = game.move();
 				maxsteps--;
+				f_v=f;
 				if(robots!=null) {
 					int speed=1;
 					for(String robot : robots) {
 						String robot_json = robot;
 						line = new JSONObject(robot_json);
+						System.out.println(line);
 						JSONObject r = line.getJSONObject("Robot");
 						int id = r.getInt("id");
 						int src = r.getInt("src");
 						int dest = r.getInt("dest");
-						speed=r.getInt("speed");
+						speed =r.getInt("speed");
 						if(dest==-1) {	
-							dest = nextNode(src);
+							dest = nextNode(src,id);
 							game.chooseNextEdge(id, dest);
-							Thread.sleep(50);
-						}
-						else {
-							Thread.sleep(50);
+							//							Thread.sleep(50);
 						}
 
+						else {Thread.sleep(70);}
 					}
-					guiGame();
-					StdDraw.show();
-					Thread.sleep(108/speed);
-
-
 				}
+				guiGame();
+				StdDraw.show();
+								Thread.sleep(10);
 			}
 			System.out.println(game.toString());
 			StdDraw.setPenColor(Color.BLACK);
@@ -407,50 +414,51 @@ public class MyGameGUI {
 			StdDraw.text(35.197730011299, 32.10469393931, "results: "+ 	sumResult());
 			StdDraw.show();
 			kml.KML_Stop();
+
 		}
 
 		catch (Exception e) {
 			e.printStackTrace();
 		}
-
 	}
 	/**
 	 * game in the server
 	 */
+
+
 	private void playAutoOnServer() {
 		int my_id = 207624222;
 		Game_Server.login(my_id);
 		int [] level= {0,1,3,5,9,11,13,16,19,20,23};
 		int [] grades= {125,436,713,570,480,1050,310,235,250,200,1000};
 		int [] moves= {290,580,580,500,580,580,580,290,580,290,1140};
-		for(int i=6;i<level.length;) {
+		for(int i=0;i<level.length;) {
 			try {
 				PlayAutoGame(level[i],moves[i]);
 				String endgame= game.toString();
+				Thread.sleep(1000);
 				JSONObject line;
-				try {
-					line = new JSONObject(endgame);
-					JSONObject g = line.getJSONObject("GameServer");
-					int grade = g.getInt("grade");
-					if(grade>=grades[i]) {
-						String remark = "data/"+level[i]+".kml";
-						game.sendKML(remark);
-						i++;
-					}	
-				} catch (JSONException e) {
-					e.printStackTrace();
+				line = new JSONObject(endgame);
+				JSONObject g = line.getJSONObject("GameServer");
+				int grade = g.getInt("grade");
+				if(grade>=grades[i]) {
+					String remark = "data/"+level[i]+".kml";
+					game.sendKML(remark);
+					i++;
+					Thread.sleep(3000);
 				}
 			}
-			catch(Exception ex) {
-				ex.printStackTrace();
-				System.out.println(ex.getMessage());
+			catch (JSONException |InterruptedException e) {
+				e.printStackTrace();
 			}
 		}
+
 	}
 	/**
 	 *  print to the window the result of the game	
 	 * @return the record
 	 */
+	// print to the window the result of the game	
 	private double sumResult() {
 		try {
 			double result=0;
@@ -467,31 +475,39 @@ public class MyGameGUI {
 		return (Double) null;
 	}
 
+
 	/**
 	 * return the hext node to move from the short path to the fruit	
 	 * @param src
 	 * @return
 	 */
-	private  int nextNode( int src) {
+
+	//return the hext node to move from the short path to the fruit	
+	private  int nextNode( int src,int id) {
 		graph_algorithms ag=new Graph_Algo();
 		ag.init(g);
 		int a= foundFruitEdge(f.get(0).getLocation()).getDest();
 		double spd=ag.shortestPathDist(src, a);
 		List<oop_node_data> sp=ag.shortestPath(src,a);
+		Fruit f_visit=null;
 		for( Fruit fruit:f ) {
-			a= foundFruitEdge(fruit.getLocation()).getDest();
-			int b= foundFruitEdge(fruit.getLocation()).getSrc();
-			List<oop_node_data> spt=ag.shortestPath(src, a);
-			double sptd=ag.shortestPathDist(src, a);
-			if(!spt.contains(g.getNode(b))) {
-				spt=ag.shortestPath(src, b);
-				sptd=ag.shortestPathDist(src, b);
-			}
-			if(spd>=sptd||sp.size()==1) {
-				sp=spt;
-				spd=sptd;
+			if(f_v.contains(fruit)) {
+				a= foundFruitEdge(fruit.getLocation()).getDest();
+				int b= foundFruitEdge(fruit.getLocation()).getSrc();
+				List<oop_node_data> spt=ag.shortestPath(src, a);
+				double sptd=ag.shortestPathDist(src, a);
+				if(!spt.contains(g.getNode(b))) {
+					spt=ag.shortestPath(src, b);
+					sptd=ag.shortestPathDist(src, b);
+				}
+				if(spd>=sptd||sp.size()==1) {
+					sp=spt;
+					spd=sptd;
+					f_visit=fruit;
+				}
 			}
 		}
+		f_v.remove(f_visit);
 		return sp.get(1).getKey();
 	}
 
@@ -501,5 +517,6 @@ public class MyGameGUI {
 			game.addRobot(foundFruitEdge(f.get(v).getLocation()).getSrc());
 		}
 	}
+
 
 }
