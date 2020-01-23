@@ -396,9 +396,9 @@ public class MyGameGUI {
 						int dest = r.getInt("dest");
 						speed =r.getInt("speed");
 						if(dest==-1) {	
-							dest = nextNode(src,id);
+							dest = nextNode13(src,id);
 							game.chooseNextEdge(id, dest);
-							//							Thread.sleep(50);
+							Thread.sleep(50);
 						}
 
 						else {Thread.sleep(70);}
@@ -406,7 +406,7 @@ public class MyGameGUI {
 				}
 				guiGame();
 				StdDraw.show();
-								Thread.sleep(10);
+				Thread.sleep(20);
 			}
 			System.out.println(game.toString());
 			StdDraw.setPenColor(Color.BLACK);
@@ -432,16 +432,18 @@ public class MyGameGUI {
 		int [] level= {0,1,3,5,9,11,13,16,19,20,23};
 		int [] grades= {125,436,713,570,480,1050,310,235,250,200,1000};
 		int [] moves= {290,580,580,500,580,580,580,290,580,290,1140};
-		for(int i=0;i<level.length;) {
+		for(int i=6;i<level.length;) {
 			try {
 				PlayAutoGame(level[i],moves[i]);
 				String endgame= game.toString();
-				Thread.sleep(1000);
+				//				Thread.sleep(1000);
 				JSONObject line;
 				line = new JSONObject(endgame);
 				JSONObject g = line.getJSONObject("GameServer");
 				int grade = g.getInt("grade");
 				if(grade>=grades[i]) {
+					StdDraw.text(35.197730011, 32.103, "move to the next level!!!");
+					StdDraw.show();
 					String remark = "data/"+level[i]+".kml";
 					game.sendKML(remark);
 					i++;
@@ -483,7 +485,7 @@ public class MyGameGUI {
 	 */
 
 	//return the hext node to move from the short path to the fruit	
-	private  int nextNode( int src,int id) {
+	private  int nextNode( int src) {
 		graph_algorithms ag=new Graph_Algo();
 		ag.init(g);
 		int a= foundFruitEdge(f.get(0).getLocation()).getDest();
@@ -510,6 +512,18 @@ public class MyGameGUI {
 		f_v.remove(f_visit);
 		return sp.get(1).getKey();
 	}
+
+	private int nextNode13 (int src,int id) {
+		graph_algorithms ag=new Graph_Algo();
+		ag.init(g);
+		int a= foundFruitEdge(f.get(id).getLocation()).getDest();
+		if(a==src) {
+			a=foundFruitEdge(f.get(id).getLocation()).getSrc();
+		}
+		List<oop_node_data> sp=ag.shortestPath(src,a);
+		return sp.get(1).getKey();
+	}
+
 
 	//	add robot to the game
 	private void putRobot(int v) {
