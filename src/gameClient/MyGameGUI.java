@@ -70,8 +70,8 @@ public class MyGameGUI {
 		}
 		default:
 		}
-		System.out.println(read_DB.printLog(207624222));
-		System.out.println(read_DB.ToughStages(207624222));
+		//		System.out.println(read_DB.printLog(207624222));
+		//		System.out.println(read_DB.ToughStages(207624222));
 	}
 	//init the size windows
 	private void initGame() {
@@ -103,7 +103,7 @@ public class MyGameGUI {
 	//draw the robot on the graph
 	private void drawRobot() {
 		List<String> robot=game.getRobots();
-		System.out.println(robot);
+		//		System.out.println(robot);
 		try {
 			for(String r:robot) {
 				JSONObject obj = new JSONObject(r);
@@ -384,8 +384,8 @@ public class MyGameGUI {
 				List<String> robots = game.move();
 				maxsteps--;
 				f_v=f;
+				int speed=1;
 				if(robots!=null) {
-					int speed=1;
 					for(String robot : robots) {
 						String robot_json = robot;
 						line = new JSONObject(robot_json);
@@ -396,17 +396,20 @@ public class MyGameGUI {
 						int dest = r.getInt("dest");
 						speed =r.getInt("speed");
 						if(dest==-1) {	
-							dest = nextNode13(src,id);
+							dest = nextNode(src);
 							game.chooseNextEdge(id, dest);
 							Thread.sleep(50);
 						}
 
-						else {Thread.sleep(70);}
+						else {
+							Thread.sleep(60);
+						}
 					}
 				}
 				guiGame();
 				StdDraw.show();
-				Thread.sleep(20);
+				Thread.sleep(100/speed);
+
 			}
 			System.out.println(game.toString());
 			StdDraw.setPenColor(Color.BLACK);
@@ -432,7 +435,7 @@ public class MyGameGUI {
 		int [] level= {0,1,3,5,9,11,13,16,19,20,23};
 		int [] grades= {125,436,713,570,480,1050,310,235,250,200,1000};
 		int [] moves= {290,580,580,500,580,580,580,290,580,290,1140};
-		for(int i=6;i<level.length;) {
+		for(int i=2;i<level.length;) {
 			try {
 				PlayAutoGame(level[i],moves[i]);
 				String endgame= game.toString();
@@ -441,6 +444,7 @@ public class MyGameGUI {
 				line = new JSONObject(endgame);
 				JSONObject g = line.getJSONObject("GameServer");
 				int grade = g.getInt("grade");
+
 				if(grade>=grades[i]) {
 					StdDraw.text(35.197730011, 32.103, "move to the next level!!!");
 					StdDraw.show();
@@ -449,6 +453,12 @@ public class MyGameGUI {
 					i++;
 					Thread.sleep(3000);
 				}
+				else {
+					StdDraw.text(35.197730011, 32.103, "move to the next level!!!");
+					StdDraw.show();
+				}
+				System.out.println(read_DB.printLog(207624222));
+				System.out.println(read_DB.ToughStages(207624222));
 			}
 			catch (JSONException |InterruptedException e) {
 				e.printStackTrace();
