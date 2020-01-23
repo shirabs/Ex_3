@@ -2,7 +2,9 @@
 A task that deals with data structures and algorithms for a weighted graph.
 
 The main goal of the assignment is to develop logic for a game in which robots perform a motion on a weighted graph.
-
+***
+![](https://i.imgur.com/AJdai3U.png)
+***
 # Game details
 In our game there are 23 stages which we want to place a set of robots at each stage.
 
