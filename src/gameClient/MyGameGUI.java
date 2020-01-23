@@ -70,8 +70,8 @@ public class MyGameGUI {
 		}
 		default:
 		}
-//				System.out.println(read_DB.printLog(207624222));
-//				System.out.println(read_DB.ToughStages(207624222));
+		//		System.out.println(read_DB.printLog(207624222));
+		//		System.out.println(read_DB.ToughStages(207624222));
 	}
 	//init the size windows
 	private void initGame() {
@@ -103,7 +103,7 @@ public class MyGameGUI {
 	//draw the robot on the graph
 	private void drawRobot() {
 		List<String> robot=game.getRobots();
-		System.out.println(robot);
+		//		System.out.println(robot);
 		try {
 			for(String r:robot) {
 				JSONObject obj = new JSONObject(r);
@@ -385,7 +385,6 @@ public class MyGameGUI {
 				maxsteps--;
 				f_v=f;
 				int speed=1;
-
 				if(robots!=null) {
 					for(String robot : robots) {
 						String robot_json = robot;
@@ -402,12 +401,14 @@ public class MyGameGUI {
 							Thread.sleep(50);
 						}
 
+
 						else {Thread.sleep(50);}
 					}
 				}
 				guiGame();
 				StdDraw.show();
-				Thread.sleep(50/speed);
+				Thread.sleep(100/speed);
+
 			}
 			System.out.println(game.toString());
 			StdDraw.setPenColor(Color.BLACK);
@@ -434,110 +435,113 @@ public class MyGameGUI {
 		int [] grades= {125,436,713,570,480,1050,310,235,250,200,1000};
 		int [] moves= {290,580,580,500,580,580,580,290,580,290,1140};
 		for(int i=7;i<level.length;) {
-			try {
-				PlayAutoGame(level[i],moves[i]);
-				String endgame= game.toString();
-				JSONObject line;
-				line = new JSONObject(endgame);
-				JSONObject g = line.getJSONObject("GameServer");
-				int grade = g.getInt("grade");
-				if(grade>=grades[i]) {
-					StdDraw.text(35.197730011, 32.103, "move to the next level!!!");
-					StdDraw.show();
-					String remark = "data/"+level[i]+".kml";
-					game.sendKML(remark);
-					i++;
-
-				}
-				else {
-					StdDraw.text(35.197730011, 32.103, "return on this level"+level[i]);
-					StdDraw.show();
-				}
-				System.out.println(read_DB.printLog(207624222));
-				System.out.println(read_DB.ToughStages(207624222));
-				Thread.sleep(3000);
-			}
-			catch (JSONException |InterruptedException e) {
-				e.printStackTrace();
-			}
-		}
-
-	}
-	/**
-	 *  print to the window the result of the game	
-	 * @return the record
-	 */
-	// print to the window the result of the game	
-	private double sumResult() {
+		
 		try {
-			double result=0;
-			for(String r:game.getRobots()) {
-				JSONObject line = new JSONObject(r);
-				JSONObject s = line.getJSONObject("Robot");
-				result+= s.getDouble("value");
+			PlayAutoGame(level[i],moves[i]);
+			String endgame= game.toString();
+			JSONObject line;
+			line = new JSONObject(endgame);
+			JSONObject g = line.getJSONObject("GameServer");
+			int grade = g.getInt("grade");
+
+			if(grade>=grades[i]) {
+				StdDraw.text(35.197730011, 32.103, "move to the next level!!!");
+				StdDraw.show();
+				String remark = "data/"+level[i]+".kml";
+				game.sendKML(remark);
+				i++;
+
 			}
-			return result;
+			else {
+				StdDraw.text(35.197730011, 32.103, "return on this level:   "+level[i]);
+				StdDraw.show();
+			}
+			System.out.println(read_DB.printLog(207624222));
+			System.out.println(read_DB.ToughStages(207624222));
+			Thread.sleep(3000);
+		
 		}
-		catch (Exception e) {
+		catch (JSONException |InterruptedException e) {
 			e.printStackTrace();
 		}
-		return (Double) null;
-	}
+					}
 
-
-	/**
-	 * return the hext node to move from the short path to the fruit	
-	 * @param src
-	 * @return
-	 */
-
-	//return the hext node to move from the short path to the fruit	
-	private  int nextNode( int src) {
-		graph_algorithms ag=new Graph_Algo();
-		ag.init(g);
-		int a= foundFruitEdge(f.get(0).getLocation()).getDest();
-		double spd=ag.shortestPathDist(src, a);
-		List<oop_node_data> sp=ag.shortestPath(src,a);
-		Fruit f_visit=null;
-		for( Fruit fruit:f ) {
-			if(f_v.contains(fruit)) {
-				a= foundFruitEdge(fruit.getLocation()).getDest();
-				int b= foundFruitEdge(fruit.getLocation()).getSrc();
-				List<oop_node_data> spt=ag.shortestPath(src, a);
-				double sptd=ag.shortestPathDist(src, a);
-				if(!spt.contains(g.getNode(b))) {
-					spt=ag.shortestPath(src, b);
-					sptd=ag.shortestPathDist(src, b);
+		}
+		/**
+		 *  print to the window the result of the game	
+		 * @return the record
+		 */
+		// print to the window the result of the game	
+		private double sumResult() {
+			try {
+				double result=0;
+				for(String r:game.getRobots()) {
+					JSONObject line = new JSONObject(r);
+					JSONObject s = line.getJSONObject("Robot");
+					result+= s.getDouble("value");
 				}
-				if(spd>=sptd||sp.size()==1) {
-					sp=spt;
-					spd=sptd;
-					f_visit=fruit;
+				return result;
+			}
+			catch (Exception e) {
+				e.printStackTrace();
+			}
+			return (Double) null;
+		}
+
+
+		/**
+		 * return the hext node to move from the short path to the fruit	
+		 * @param src
+		 * @return
+		 */
+
+		//return the hext node to move from the short path to the fruit	
+		private  int nextNode( int src) {
+			graph_algorithms ag=new Graph_Algo();
+			ag.init(g);
+			int a= foundFruitEdge(f.get(0).getLocation()).getDest();
+			double spd=ag.shortestPathDist(src, a);
+			List<oop_node_data> sp=ag.shortestPath(src,a);
+			Fruit f_visit=null;
+			for( Fruit fruit:f ) {
+				if(f_v.contains(fruit)) {
+					a= foundFruitEdge(fruit.getLocation()).getDest();
+					int b= foundFruitEdge(fruit.getLocation()).getSrc();
+					List<oop_node_data> spt=ag.shortestPath(src, a);
+					double sptd=ag.shortestPathDist(src, a);
+					if(!spt.contains(g.getNode(b))) {
+						spt=ag.shortestPath(src, b);
+						sptd=ag.shortestPathDist(src, b);
+					}
+					if(spd>=sptd||sp.size()==1) {
+						sp=spt;
+						spd=sptd;
+						f_visit=fruit;
+					}
 				}
 			}
+			f_v.remove(f_visit);
+			return sp.get(1).getKey();
 		}
-		f_v.remove(f_visit);
-		return sp.get(1).getKey();
-	}
 
-	private int nextNode13 (int src,int id) {
-		graph_algorithms ag=new Graph_Algo();
-		ag.init(g);
-		int a= foundFruitEdge(f.get(id).getLocation()).getDest();
-		if(a==src) {
-			a=foundFruitEdge(f.get(id).getLocation()).getSrc();
+		private int nextNode13 (int src,int id) {
+			graph_algorithms ag=new Graph_Algo();
+			ag.init(g);
+			int a= foundFruitEdge(f.get(id).getLocation()).getDest();
+			if(a==src) {
+				a=foundFruitEdge(f.get(id).getLocation()).getSrc();
+			}
+			List<oop_node_data> sp=ag.shortestPath(src,a);
+			return sp.get(1).getKey();
 		}
-		List<oop_node_data> sp=ag.shortestPath(src,a);
-		return sp.get(1).getKey();
-	}
 
 
-	//	add robot to the game
-	private void putRobot(int v) {
-		if(v<f.size()) {
-			game.addRobot(foundFruitEdge(f.get(v).getLocation()).getSrc());
+		//	add robot to the game
+		private void putRobot(int v) {
+			if(v<f.size()) {
+				game.addRobot(foundFruitEdge(f.get(v).getLocation()).getSrc());
+			}
 		}
+
+
 	}
-
-
-}
