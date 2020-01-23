@@ -20,3 +20,5 @@ The first option is a manual game where we place the robots and tell where each 
 A second option is an automatic game that when we run it the bots are placed right in a strategic place that can collect the money and earn a maximum score together.
 
 The robots in the second type of game move alone without having to tell them where to move and collect the coins.
+
+![image](https://user-images.githubusercontent.com/57942113/72979597-5cad0400-3de1-11ea-9e4d-5eff6eb4d3ba.png)
